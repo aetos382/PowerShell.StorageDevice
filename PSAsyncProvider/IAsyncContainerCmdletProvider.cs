@@ -24,7 +24,7 @@ namespace PSAsyncProvider
             throw new PSNotSupportedException();
         }
 
-        public virtual ValueTask<object?> CopyItemDynamicParameters(
+        public virtual ValueTask<object?> CopyItemDynamicParametersAsync(
             string path,
             string copyPath,
             bool recurse)
@@ -32,7 +32,7 @@ namespace PSAsyncProvider
             return default;
         }
 
-        public virtual ValueTask GetChildItems(
+        public virtual ValueTask GetChildItemsAsync(
             string path,
             bool recurse,
             CancellationToken cancellationToken)
@@ -40,7 +40,7 @@ namespace PSAsyncProvider
             throw new PSNotSupportedException();
         }
 
-        public virtual ValueTask GetChildItems(
+        public virtual ValueTask GetChildItemsAsync(
             string path,
             bool recurse,
             uint depth,

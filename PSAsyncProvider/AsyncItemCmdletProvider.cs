@@ -9,5 +9,17 @@ namespace PSAsyncProvider
     {
         public abstract ValueTask<bool> IsValidPathAsync(
             string path);
+
+        protected override bool IsValidPath(
+            string path)
+        {
+            return this.IsValidPathAsync(path).Result;
+        }
+
+        protected override bool ItemExists(
+            string path)
+        {
+            return this.IsValidPathAsync(path).Result;
+        }
     }
 }
