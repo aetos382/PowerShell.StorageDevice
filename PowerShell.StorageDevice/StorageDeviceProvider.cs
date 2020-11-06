@@ -9,8 +9,10 @@ using PSAsyncProvider;
 namespace PowerShellStorageDevice
 {
     [CmdletProvider(ProviderName, SupportedCapabilities)]
-    public class StorageDeviceProvider :
-        AsyncNavigationCmdletProvider
+    [GenerateMember]
+    public partial class StorageDeviceProvider :
+        NavigationCmdletProvider,
+        IAsyncNavigationCmdletProvider
     {
         private const string ProviderName = "StorageDevice";
 
@@ -28,15 +30,19 @@ namespace PowerShellStorageDevice
         protected override ProviderInfo Start(
             ProviderInfo providerInfo)
         {
+            this.WriteVerbose(nameof(this.Start));
+
             return base.Start(providerInfo);
         }
 
         protected override void Stop()
         {
+            this.WriteVerbose(nameof(this.Stop));
+
             base.Stop();
         }
 
-        public override ValueTask<bool> IsValidPathAsync(
+        public ValueTask<bool> IsValidPathAsync(
             string path)
         {
             return new ValueTask<bool>(true);
@@ -83,20 +89,6 @@ namespace PowerShellStorageDevice
             {
                 throw new ArgumentNullException(nameof(path));
             }
-
-            if (path.Length == 0)
-            {
-                var devices = StorageDeviceManager.GetDevices();
-
-                foreach (var device in devices)
-                {
-                    await this
-                        .WriteItemObjectAsync(device, device.Name, true, cancellationToken)
-                        .ConfigureAwait(false);
-                }
-
-                return;
-            }
         }
 
         public async ValueTask GetChildItemsAsync(
@@ -108,20 +100,6 @@ namespace PowerShellStorageDevice
             if (path is null)
             {
                 throw new ArgumentNullException(nameof(path));
-            }
-
-            if (path.Length == 0)
-            {
-                var devices = StorageDeviceManager.GetDevices();
-
-                foreach (var device in devices)
-                {
-                    await this
-                        .WriteItemObjectAsync(device, device.Name, true, cancellationToken)
-                        .ConfigureAwait(false);
-                }
-
-                return;
             }
         }
     }
