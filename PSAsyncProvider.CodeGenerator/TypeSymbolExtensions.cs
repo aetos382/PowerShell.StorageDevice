@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 using Microsoft.CodeAnalysis;
 
@@ -6,26 +7,72 @@ namespace PSAsyncProvider.CodeGenerator
 {
     internal static class TypeSymbolExtensions
     {
+        public static bool IsType(
+            this ITypeSymbol type,
+            ITypeSymbol testType,
+            bool allowSubType,
+            IEqualityComparer<ISymbol?>? comparer)
+        {
+            comparer ??= SymbolEqualityComparer.Default;
+
+            if (comparer.Equals(type, testType))
+            {
+                return true;
+            }
+
+            if (!allowSubType)
+            {
+                return false;
+            }
+
+            var baseType = type.BaseType;
+            while (baseType is not null)
+            {
+                if (comparer.Equals(baseType, testType))
+                {
+                    return true;
+                }
+
+                baseType = baseType.BaseType;
+            }
+
+            return false;
+        }
+
+        public static bool HasInterface(
+            this ITypeSymbol type,
+            ITypeSymbol interfaceType,
+            bool thisTypeOnly,
+            IEqualityComparer<ISymbol?>? comparer)
+        {
+            comparer ??= SymbolEqualityComparer.Default;
+
+            var interfaces = thisTypeOnly ?
+                type.Interfaces :
+                type.AllInterfaces;
+
+            return interfaces.Any(x => comparer.Equals(x, interfaceType));
+        }
+
         public static ISymbol? GetOverrideSymbol(
             this ITypeSymbol type,
             IMethodSymbol baseSymbol,
-            SymbolEqualityComparer comparer)
+            IEqualityComparer<ISymbol?>? comparer)
         {
-            var members = type.GetMembers(baseSymbol.Name);
+            comparer ??= SymbolEqualityComparer.Default;
 
-            foreach (var member in members)
+            var methods = type.GetMembers(baseSymbol.Name).OfType<IMethodSymbol>();
+
+            foreach (var method in methods)
             {
-                if (!member.IsOverride)
+                if (!method.IsOverride)
                 {
                     continue;
                 }
 
-                if (member is IMethodSymbol method)
+                if (comparer.Equals(method.OverriddenMethod, baseSymbol))
                 {
-                    if (comparer.Equals(method.OverriddenMethod, baseSymbol))
-                    {
-                        return method;
-                    }
+                    return method;
                 }
             }
 
@@ -35,19 +82,16 @@ namespace PSAsyncProvider.CodeGenerator
         public static IMethodSymbol? GetMethodSymbol(
             this ITypeSymbol type,
             string name,
-            ITypeSymbol[] parameterTypes,
+            IReadOnlyList<ITypeSymbol>? parameterTypes,
             ITypeSymbol returnType,
-            SymbolEqualityComparer comparer)
+            IEqualityComparer<ISymbol?>? comparer)
         {
-            var members = type.GetMembers(name);
+            comparer ??= SymbolEqualityComparer.Default;
 
-            foreach (var member in members)
+            var methods = type.GetMembers(name).OfType<IMethodSymbol>();
+
+            foreach (var method in methods)
             {
-                if (member is not IMethodSymbol method)
-                {
-                    continue;
-                }
-
                 if (!comparer.Equals(method.ReturnType, returnType))
                 {
                     continue;
