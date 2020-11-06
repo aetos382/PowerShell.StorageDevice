@@ -10,43 +10,14 @@ using Microsoft.CodeAnalysis.Text;
 namespace PSAsyncProvider.CodeGenerator
 {
     [Generator]
-    public class NavigationCmdletProviderGenerator :
-        ISourceGenerator
+    public class AsyncNavigationCmdletProviderGenerator :
+        AsyncContainerCmdletProviderCodeGenerator
     {
-        private const string attributeText = @"
-namespace PSAsyncProvider
-{
-    using System;
-    using System.Diagnostics;
-
-    [Conditional(""COMPILE_TIME_ONLY"")]
-    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    public sealed class GenerateMemberAttribute :
-        Attribute
-    {
-    }
-}
-";
-
-        public void Execute(
-            GeneratorExecutionContext context)
+        protected override bool ExecuteCore(
+            GeneratorExecutionContext context,
+            Compilation compilation)
         {
             var comparer = SymbolEqualityComparer.Default;
-
-            var attributeSource = SourceText.From(attributeText, Encoding.UTF8);
-
-            context.AddSource("GenerateMemberAttibute.cs", attributeSource);
-
-            if (context.SyntaxReceiver is not SyntaxReceiver receiver)
-            {
-                return;
-            }
-
-            var compilation = context.Compilation.AddSyntaxTrees(
-                CSharpSyntaxTree.ParseText(
-                    attributeSource,
-                    (CSharpParseOptions)context.ParseOptions,
-                    cancellationToken: context.CancellationToken));
 
             var attributeSymbol = compilation.GetTypeByMetadataName("PSAsyncProvider.GenerateMemberAttribute");
             var navigationProviderSymbol = compilation.GetTypeByMetadataName("System.Management.Automation.Provider.NavigationCmdletProvider");
@@ -62,7 +33,7 @@ namespace PSAsyncProvider
                 stringTypeSymbol is null ||
                 booleanTypeSymbol is null)
             {
-                return;
+                return false;
             }
 
             var isValidPath = itemProviderSymbol.GetMethodSymbol(
@@ -73,7 +44,7 @@ namespace PSAsyncProvider
 
             if (isValidPath is null)
             {
-                return;
+                return false;
             }
 
             foreach (var syntax in receiver.CandidateSyntaxes)
@@ -119,6 +90,8 @@ namespace PSAsyncProvider
                 context.AddSource(
                     $"{fileNameBase}_Generated.cs",
                     SourceText.From(buffer.ToString(), Encoding.UTF8));
+
+                return true;
             }
 
             void GenerateIsValidPath(
@@ -207,55 +180,6 @@ protected override bool IsValidPath(string path)
                 }
 
                 return false;
-            }
-        }
-
-        public void Initialize(
-            GeneratorInitializationContext context)
-        {
-            // System.Diagnostics.Debugger.Launch();
-
-            context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
-        }
-
-        private class SyntaxReceiver :
-            ISyntaxReceiver
-        {
-            private readonly List<ClassDeclarationSyntax> _candidateSyntaxes =
-                new List<ClassDeclarationSyntax>();
-
-            public IReadOnlyCollection<ClassDeclarationSyntax> CandidateSyntaxes
-            {
-                get
-                {
-                    return this._candidateSyntaxes;
-                }
-            }
-
-            public void OnVisitSyntaxNode(
-                SyntaxNode syntaxNode)
-            {
-                if (syntaxNode is not ClassDeclarationSyntax classSyntax)
-                {
-                    return;
-                }
-
-                if (!classSyntax.Modifiers.Any(SyntaxKind.PartialKeyword))
-                {
-                    return;
-                }
-
-                if (!classSyntax.AttributeLists.Any())
-                {
-                    return;
-                }
-
-                if (classSyntax.BaseList is null)
-                {
-                    return;
-                }
-
-                this._candidateSyntaxes.Add(classSyntax);
             }
         }
     }
