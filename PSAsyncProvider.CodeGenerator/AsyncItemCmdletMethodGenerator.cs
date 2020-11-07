@@ -9,6 +9,7 @@ namespace PSAsyncProvider.CodeGenerator
         IAsyncProviderMethodGenerator
     {
         public AsyncItemCmdletMethodGenerator(
+            GeneratorExecutionContext context,
             Compilation compilation)
         {
             this._helper = new AsyncCmdletProviderMethodGenerationHelper(
@@ -37,18 +38,33 @@ namespace PSAsyncProvider.CodeGenerator
             ITypeSymbol symbol,
             CancellationToken cancellationToken)
         {
+            string code;
+
+            code = this.GenerateIsValidPath(symbol, cancellationToken);
+            if (!string.IsNullOrWhiteSpace(code))
+            {
+                yield return code;
+            }
+        }
+
+        private string GenerateIsValidPath(
+            ITypeSymbol symbol,
+            CancellationToken cancellation)
+        {
             var isValidPath = symbol.GetOverrideSymbol(
                 this._isValidPath,
                 this._symbolComparer);
 
-            if (isValidPath is null)
+            if (isValidPath is not null)
             {
-                yield return $@"protected override bool IsValidPath(string path)
+                return null;
+            }
+
+            return $@"protected override bool IsValidPath(string path)
 {{
     return this.IsValidPathAsync(path).Result;
 }}
 ";
-            }
         }
 
         private readonly AsyncCmdletProviderMethodGenerationHelper _helper;

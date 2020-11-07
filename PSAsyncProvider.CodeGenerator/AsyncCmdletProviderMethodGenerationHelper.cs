@@ -18,7 +18,7 @@ namespace PSAsyncProvider.CodeGenerator
 
             this._attributeSymbol = attributeSymbol;
             this.ProviderSymbol = providerSymbol;
-            this._interfaceSymbol = interfaceSymbol;
+            this.InterfaceSymbol = interfaceSymbol;
             this._symbolComparer = symbolComparer ?? SymbolEqualityComparer.Default;
         }
 
@@ -37,7 +37,7 @@ namespace PSAsyncProvider.CodeGenerator
                 return false;
             }
 
-            if (!symbol.HasInterface(this._interfaceSymbol, false, comparer))
+            if (!symbol.HasInterface(this.InterfaceSymbol, false, comparer))
             {
                 return false;
             }
@@ -49,7 +49,7 @@ namespace PSAsyncProvider.CodeGenerator
 
         public ITypeSymbol ProviderSymbol { get; }
 
-        private readonly ITypeSymbol _interfaceSymbol;
+        public ITypeSymbol InterfaceSymbol { get; }
 
         private readonly IEqualityComparer<ISymbol?> _symbolComparer;
     }

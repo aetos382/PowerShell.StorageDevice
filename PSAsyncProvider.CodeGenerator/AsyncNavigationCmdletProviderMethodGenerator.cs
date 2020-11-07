@@ -9,6 +9,7 @@ namespace PSAsyncProvider.CodeGenerator
         IAsyncProviderMethodGenerator
     {
         public AsyncNavigationCmdletProviderMethodGenerator(
+            GeneratorExecutionContext context,
             Compilation compilation)
         {
             this._helper = new AsyncCmdletProviderMethodGenerationHelper(

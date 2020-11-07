@@ -27,21 +27,6 @@ namespace PowerShellStorageDevice
         {
         }
 
-        protected override ProviderInfo Start(
-            ProviderInfo providerInfo)
-        {
-            this.WriteVerbose(nameof(this.Start));
-
-            return base.Start(providerInfo);
-        }
-
-        protected override void Stop()
-        {
-            this.WriteVerbose(nameof(this.Stop));
-
-            base.Stop();
-        }
-
         public ValueTask<bool> IsValidPathAsync(
             string path)
         {
