@@ -18,13 +18,12 @@ namespace PSAsyncProvider.CodeGenerator
                 "PSAsyncProvider.IAsyncItemCmdletProvider",
                 this._symbolComparer);
 
-            var stringSymbol = compilation.GetTypeByMetadataName(typeof(string).FullName);
-            var booleanSymbol = compilation.GetTypeByMetadataName(typeof(bool).FullName);
+            var typeSymbols = new TypeSymbols(compilation);
 
             this._isValidPath = this._helper.ProviderSymbol.GetMethodSymbol(
                 "IsValidPath",
-                new[] { stringSymbol },
-                booleanSymbol,
+                new[] { typeSymbols.String },
+                typeSymbols.Boolean,
                 this._symbolComparer);
         }
 
@@ -69,7 +68,7 @@ namespace PSAsyncProvider.CodeGenerator
 
         private readonly AsyncCmdletProviderMethodGenerationHelper _helper;
 
-        private readonly IEqualityComparer<ISymbol?> _symbolComparer = SymbolEqualityComparer.Default;
+        private readonly SymbolEqualityComparer _symbolComparer = SymbolEqualityComparer.Default;
 
         private readonly IMethodSymbol _isValidPath;
     }

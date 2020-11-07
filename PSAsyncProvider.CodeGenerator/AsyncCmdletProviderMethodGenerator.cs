@@ -25,8 +25,7 @@ namespace PSAsyncProvider.CodeGenerator
             var providerInfoSymbol = compilation.GetTypeByMetadataName(
                 "System.Management.Automation.ProviderInfo");
 
-            var valueTaskSymbol = compilation.GetTypeByMetadataName(
-                "System.Threading.Tasks.ValueTask`1");
+            var typeSymbols = new TypeSymbols(compilation);
 
             if (providerInfoSymbol is null)
             {
@@ -40,11 +39,23 @@ namespace PSAsyncProvider.CodeGenerator
                 new[] { providerInfoSymbol },
                 providerInfoSymbol,
                 null);
+            
+            this._startDynamicParameters = providerSymbol.GetMethodSymbol(
+                "StartDynamicParameters",
+                null,
+                typeSymbols.Object,
+                null);
 
             this._startAsync = interfaceSymbol.GetMethodSymbol(
                 "StartAsync",
                 new[] { providerInfoSymbol },
-                valueTaskSymbol.Construct(providerInfoSymbol),
+                typeSymbols.ValueTask.Construct(providerInfoSymbol),
+                null);
+
+            this._startDynamicParametersAsync = interfaceSymbol.GetMethodSymbol(
+                "StartDynamicParametersAsync",
+                null,
+                typeSymbols.ValueTask.Construct(typeSymbols.Object),
                 null);
         }
 
@@ -64,6 +75,12 @@ namespace PSAsyncProvider.CodeGenerator
             if (!string.IsNullOrWhiteSpace(code))
             {
                 yield return code;
+
+                code = this.GenerateStartDynamicParmaeters(symbol, cancellationToken);
+                if (!string.IsNullOrWhiteSpace(code))
+                {
+                    yield return code;
+                }
             }
 
             yield break;
@@ -99,6 +116,36 @@ protected override System.Management.Automation.ProviderInfo Start(System.Manage
 ";
         }
 
+        private string? GenerateStartDynamicParmaeters(
+            ITypeSymbol symbol,
+            CancellationToken cancellationToken)
+        {
+            var startDynamicParameters = symbol.GetOverrideSymbol(
+                this._startDynamicParameters,
+                _comparer);
+
+            if (startDynamicParameters is not null)
+            {
+                return null;
+            }
+
+            var startDynamicParametersAsync = symbol.FindImplementationForInterfaceMember(
+                this._startDynamicParametersAsync);
+
+            if (startDynamicParametersAsync is null ||
+                _comparer.Equals(startDynamicParametersAsync.ContainingType, this._interfaceType))
+            {
+                return null;
+            }
+
+            return @"
+protected override object StartDynamicParameters()
+{
+    return this.StartDynamicParametersAsync().Result;
+}
+";
+            }
+
         private static readonly SymbolEqualityComparer _comparer = SymbolEqualityComparer.Default;
 
         private readonly AsyncCmdletProviderMethodGenerationHelper _helper;
@@ -107,6 +154,10 @@ protected override System.Management.Automation.ProviderInfo Start(System.Manage
 
         private readonly IMethodSymbol _start;
 
+        private readonly IMethodSymbol _startDynamicParameters;
+
         private readonly IMethodSymbol _startAsync;
+
+        private readonly IMethodSymbol _startDynamicParametersAsync;
     }
 }
