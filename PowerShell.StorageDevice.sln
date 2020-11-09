@@ -5,11 +5,11 @@ VisualStudioVersion = 16.0.30503.244
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PowerShell.StorageDevice", "PowerShell.StorageDevice\PowerShell.StorageDevice.csproj", "{3BD1F75F-23EB-4776-806A-10AE9E691D0F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSAsyncProvider", "PSAsyncProvider\PSAsyncProvider.csproj", "{DD4D2DCE-0EB4-422C-8B54-39F1D46D0CB0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSAsync", "PSAsync\PSAsync.csproj", "{DD4D2DCE-0EB4-422C-8B54-39F1D46D0CB0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSAsyncProvider.UnitTests", "PSAsyncProvider.UnitTests\PSAsyncProvider.UnitTests.csproj", "{EE1A2695-7135-47CD-9DAF-ED19E1A1A2D0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSAsync.UnitTests", "PSAsync.UnitTests\PSAsync.UnitTests.csproj", "{EE1A2695-7135-47CD-9DAF-ED19E1A1A2D0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSAsyncProvider.CodeGenerator", "PSAsyncProvider.CodeGenerator\PSAsyncProvider.CodeGenerator.csproj", "{A868937C-EB43-4B50-B7C8-952ADB667662}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSAsync.CodeGenerator", "PSAsync.CodeGenerator\PSAsync.CodeGenerator.csproj", "{A868937C-EB43-4B50-B7C8-952ADB667662}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{25EC673A-F5D4-4C7F-BECB-34C968225C84}"
 	ProjectSection(SolutionItems) = preProject
