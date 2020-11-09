@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 using Microsoft;
 
-namespace PSAsync
+namespace PSAsync.Provider
 {
     public static class AsyncCmdletProviderOutputExtensions
     {

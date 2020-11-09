@@ -4,18 +4,18 @@ using System.Threading;
 using Microsoft;
 using Microsoft.CodeAnalysis;
 
-namespace PSAsync.CodeGenerator
+namespace PSAsync.CodeGenerator.Provider
 {
-    internal class AsyncContainerCmdletProviderMethodGenerator :
-        IAsyncProviderMethodGenerator
+    internal class AsyncDriveCmdletMethodGenerator :
+        IAsyncMethodGenerator
     {
-        public AsyncContainerCmdletProviderMethodGenerator(
+        public AsyncDriveCmdletMethodGenerator(
             CodeGenerationContext context)
         {
-            this._helper = new AsyncCmdletProviderMethodGenerationHelper(
+            this._helper = new AsyncMethodGenerationHelper(
                 context,
-                "System.Management.Automation.Provider.ContainerCmdletProvider",
-                "PSAsync.IAsyncContainerCmdletProvider");
+                "System.Management.Automation.Provider.DriveCmdletProvider",
+                "PSAsync.Provider.IAsyncDriveCmdletProvider");
         }
 
         public bool IsTargetType(
@@ -23,7 +23,7 @@ namespace PSAsync.CodeGenerator
         {
             return this._helper.IsTargetType(concreteProviderType);
         }
-
+        
         public IEnumerable<string> GenerateCode(
             ITypeSymbol concreteProviderType,
             CancellationToken cancellationToken)
@@ -40,6 +40,6 @@ namespace PSAsync.CodeGenerator
             yield break;
         }
 
-        private readonly AsyncCmdletProviderMethodGenerationHelper _helper;
+        private readonly AsyncMethodGenerationHelper _helper;
     }
 }

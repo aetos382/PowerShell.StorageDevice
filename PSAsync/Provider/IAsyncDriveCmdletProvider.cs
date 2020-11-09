@@ -2,7 +2,7 @@
 using System.Management.Automation;
 using System.Threading.Tasks;
 
-namespace PSAsync
+namespace PSAsync.Provider
 {
     public interface IAsyncDriveCmdletProvider :
         IAsyncCmdletProvider

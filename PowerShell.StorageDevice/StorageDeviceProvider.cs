@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Microsoft;
 
 using PSAsync;
+using PSAsync.Provider;
 
 namespace PowerShellStorageDevice
 {

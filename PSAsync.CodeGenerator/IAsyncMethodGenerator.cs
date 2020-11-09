@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 
 namespace PSAsync.CodeGenerator
 {
-    internal interface IAsyncProviderMethodGenerator
+    internal interface IAsyncMethodGenerator
     {
         bool IsTargetType(
             ITypeSymbol symbol);

@@ -5,18 +5,18 @@ using System.Threading;
 using Microsoft;
 using Microsoft.CodeAnalysis;
 
-namespace PSAsync.CodeGenerator
+namespace PSAsync.CodeGenerator.Provider
 {
     internal class AsyncItemCmdletMethodGenerator :
-        IAsyncProviderMethodGenerator
+        IAsyncMethodGenerator
     {
         public AsyncItemCmdletMethodGenerator(
             CodeGenerationContext context)
         {
-            var helper = new AsyncCmdletProviderMethodGenerationHelper(
+            var helper = new AsyncMethodGenerationHelper(
                 context,
                 "System.Management.Automation.Provider.ItemCmdletProvider",
-                "PSAsync.IAsyncItemCmdletProvider");
+                "PSAsync.Provider.IAsyncItemCmdletProvider");
 
             var providerSymbol = helper.ProviderSymbol;
 
@@ -108,7 +108,7 @@ protected override bool IsValidPath(string path)
 ";
         }
 
-        private readonly AsyncCmdletProviderMethodGenerationHelper _helper;
+        private readonly AsyncMethodGenerationHelper _helper;
 
         private readonly IEqualityComparer<ISymbol?> _symbolComparer;
 

@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace PSAsync
+namespace PSAsync.Provider
 {
     public interface IAsyncContainerCmdletProvider :
         IAsyncItemCmdletProvider

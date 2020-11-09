@@ -4,18 +4,18 @@ using System.Threading;
 using Microsoft;
 using Microsoft.CodeAnalysis;
 
-namespace PSAsync.CodeGenerator
+namespace PSAsync.CodeGenerator.Provider
 {
     internal class AsyncNavigationCmdletProviderMethodGenerator :
-        IAsyncProviderMethodGenerator
+        IAsyncMethodGenerator
     {
         public AsyncNavigationCmdletProviderMethodGenerator(
             CodeGenerationContext context)
         {
-            var helper = new AsyncCmdletProviderMethodGenerationHelper(
+            var helper = new AsyncMethodGenerationHelper(
                 context,
                 "System.Management.Automation.Provider.NavigationCmdletProvider",
-                "PSAsync.IAsyncNavigationCmdletProvider");
+                "PSAsync.Provider.IAsyncNavigationCmdletProvider");
 
             this._helper = helper;
             
@@ -70,7 +70,7 @@ namespace PSAsync.CodeGenerator
             }
         }
 
-        private readonly AsyncCmdletProviderMethodGenerationHelper _helper;
+        private readonly AsyncMethodGenerationHelper _helper;
 
         private readonly MethodDelegation _isItemContainer;
 

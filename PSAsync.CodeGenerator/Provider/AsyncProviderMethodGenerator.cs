@@ -9,47 +9,27 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
 
-namespace PSAsync.CodeGenerator
+namespace PSAsync.CodeGenerator.Provider
 {
     [Generator]
     public class AsyncProviderMethodGenerator :
         ISourceGenerator
     {
-        private const string attributeText = @"
-namespace PSAsync
-{
-    using System;
-    using System.Diagnostics;
-
-    [Conditional(""COMPILE_TIME_ONLY"")]
-    [AttributeUsage(AttributeTargets.Class, Inherited = false)]
-    internal sealed class GenerateMemberAttribute :
-        Attribute
-    {
-    }
-}
-";
-
         public virtual void Execute(
             GeneratorExecutionContext context)
         {
-            var attributeSource = SourceText.From(attributeText, Encoding.UTF8);
-            context.AddSource("GenerateMemberAttibute.cs", attributeSource);
+            GenerateMemberAttribute.AddToProject(context);
 
             if (context.SyntaxReceiver is not SyntaxReceiver receiver)
             {
                 return;
             }
 
-            var compilation = context.Compilation.AddSyntaxTrees(
-                CSharpSyntaxTree.ParseText(
-                    attributeSource,
-                    (CSharpParseOptions)context.ParseOptions,
-                    cancellationToken: context.CancellationToken));
+            var compilation = GenerateMemberAttribute.AddToCompilation(context);
 
             var ctx = new CodeGenerationContext(compilation);
 
-            var generators = new IAsyncProviderMethodGenerator[]
+            var generators = new IAsyncMethodGenerator[]
             {
                 new AsyncCmdletProviderMethodGenerator(ctx),
                 new AsyncDriveCmdletMethodGenerator(ctx),
@@ -162,7 +142,7 @@ namespace PSAsync
         public virtual void Initialize(
             GeneratorInitializationContext context)
         {
-            // System.Diagnostics.Debugger.Launch();
+            System.Diagnostics.Debugger.Launch();
             context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
         }
 

@@ -1,16 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace PSAsync
+namespace PSAsync.Provider
 {
-    public interface IAsyncContentWriter
+    public interface IAsyncContentReader :
+        IDisposable,
+        IAsyncDisposable
     {
         Task CloseAsync();
 
-        IAsyncEnumerable<T> WriteAsync<T>(
-            IAsyncEnumerable<T> content,
+        IAsyncEnumerable<T> ReadAsync<T>(
+            long readCount,
             CancellationToken cancellationToken);
 
         Task SeekAsync(

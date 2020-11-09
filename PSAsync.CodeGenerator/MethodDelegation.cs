@@ -10,7 +10,7 @@ namespace PSAsync.CodeGenerator
     internal class MethodDelegation
     {
         public MethodDelegation(
-            AsyncCmdletProviderMethodGenerationHelper helper,
+            AsyncMethodGenerationHelper helper,
             string methodName,
             IEnumerable<ITypeSymbol>? parameterTypes,
             ITypeSymbol returnType)

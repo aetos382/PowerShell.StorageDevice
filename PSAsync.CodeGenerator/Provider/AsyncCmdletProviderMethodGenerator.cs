@@ -5,20 +5,20 @@ using System.Threading;
 using Microsoft;
 using Microsoft.CodeAnalysis;
 
-namespace PSAsync.CodeGenerator
+namespace PSAsync.CodeGenerator.Provider
 {
     internal class AsyncCmdletProviderMethodGenerator :
-        IAsyncProviderMethodGenerator
+        IAsyncMethodGenerator
     {
         public AsyncCmdletProviderMethodGenerator(
             CodeGenerationContext context)
         {
             Requires.NotNull(context, nameof(context));
 
-            var helper = new AsyncCmdletProviderMethodGenerationHelper(
+            var helper = new AsyncMethodGenerationHelper(
                 context,
                 "System.Management.Automation.Provider.CmdletProvider",
-                "PSAsync.IAsyncCmdletProvider");
+                "PSAsync.Provider.IAsyncCmdletProvider");
 
             var typeSymbols = context.TypeSymbols;
 
@@ -83,7 +83,7 @@ namespace PSAsync.CodeGenerator
             yield break;
         }
 
-        private readonly AsyncCmdletProviderMethodGenerationHelper _helper;
+        private readonly AsyncMethodGenerationHelper _helper;
 
         private readonly MethodDelegation _start;
 

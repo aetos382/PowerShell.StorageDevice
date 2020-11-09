@@ -6,9 +6,9 @@ using Microsoft.CodeAnalysis;
 
 namespace PSAsync.CodeGenerator
 {
-    internal class AsyncCmdletProviderMethodGenerationHelper
+    internal class AsyncMethodGenerationHelper
     {
-        public AsyncCmdletProviderMethodGenerationHelper(
+        public AsyncMethodGenerationHelper(
             CodeGenerationContext context,
             string providerTypeName,
             string interfaceName)
@@ -19,7 +19,7 @@ namespace PSAsync.CodeGenerator
 
             var compilation = context.Compilation;
 
-            var attributeSymbol = compilation.GetTypeByMetadataName("PSAsync.GenerateMemberAttribute");
+            var attributeSymbol = compilation.GetTypeByMetadataName(GenerateMemberAttribute.FullName);
             var providerSymbol = compilation.GetTypeByMetadataName(providerTypeName);
             var interfaceSymbol = compilation.GetTypeByMetadataName(interfaceName);
 

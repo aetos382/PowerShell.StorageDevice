@@ -1,4 +1,4 @@
-﻿namespace PSAsync
+﻿namespace PSAsync.Provider
 {
     public class PathConversionResult
     {
