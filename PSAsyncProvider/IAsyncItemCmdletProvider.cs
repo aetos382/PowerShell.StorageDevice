@@ -7,13 +7,13 @@ namespace PSAsyncProvider
     public interface IAsyncItemCmdletProvider :
         IAsyncDriveCmdletProvider
     {
-        ValueTask ClearItemAsync(
+        Task ClearItemAsync(
             string path)
         {
             throw new PSNotImplementedException();
         }
 
-        ValueTask<object?> ClearItemDynamicParametersAsync(
+        Task<object?> ClearItemDynamicParametersAsync(
             string path)
         {
             throw new PSNotImplementedException();
@@ -25,53 +25,53 @@ namespace PSAsyncProvider
             throw new PSNotImplementedException();
         }
 
-        ValueTask GetItemAsync(
+        Task GetItemAsync(
             string path)
         {
             throw new PSNotImplementedException();
         }
 
-        ValueTask<object> GetItemDynamicParametersAsync(
+        Task<object> GetItemDynamicParametersAsync(
             string path)
         {
             throw new PSNotImplementedException();
         }
 
-        ValueTask InvokeDefaultActionAsync(
+        Task InvokeDefaultActionAsync(
             string path)
         {
             throw new PSNotImplementedException();
         }
 
-        ValueTask<object> InvokeDefaultActionDynamicParametersAsync(
+        Task<object> InvokeDefaultActionDynamicParametersAsync(
             string path)
         {
             throw new PSNotImplementedException();
         }
 
-        ValueTask<bool> IsValidPathAsync(
+        Task<bool> IsValidPathAsync(
             string path);
 
-        ValueTask<bool> ItemExistsAsync(
+        Task<bool> ItemExistsAsync(
             string path)
         {
             throw new PSNotImplementedException();
         }
 
-        ValueTask<object> ItemExistsDynamicParametersAsync(
+        Task<object> ItemExistsDynamicParametersAsync(
             string path)
         {
             throw new PSNotImplementedException();
         }
 
-        ValueTask SetItemAsync(
+        Task SetItemAsync(
             string path,
             object value)
         {
             throw new PSNotImplementedException();
         }
 
-        ValueTask<object> SetItemDynamicParametersAsync(
+        Task<object> SetItemDynamicParametersAsync(
             string path,
             object value)
         {

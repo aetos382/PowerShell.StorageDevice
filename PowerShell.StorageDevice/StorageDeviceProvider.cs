@@ -25,13 +25,13 @@ namespace PowerShellStorageDevice
         {
         }
 
-        public ValueTask<bool> IsValidPathAsync(
+        public Task<bool> IsValidPathAsync(
             string path)
         {
-            return new ValueTask<bool>(true);
+            return Task.FromResult(true);
         }
 
-        public ValueTask<bool> ItemExistsAsync(
+        public Task<bool> ItemExistsAsync(
             string path)
         {
             if (path is null)
@@ -41,10 +41,10 @@ namespace PowerShellStorageDevice
 
             if (path.Length == 0)
             {
-                return new ValueTask<bool>(true);
+                return Task.FromResult(true);
             }
 
-            return new ValueTask<bool>(false);
+            return Task.FromResult(false);
         }
 
         protected override bool ConvertPath(string path, string filter, ref string updatedPath, ref string updatedFilter)
@@ -72,7 +72,7 @@ namespace PowerShellStorageDevice
             return base.MakePath(parent, child);
         }
 
-        public ValueTask<bool> IsItemContainerAsync(
+        public Task<bool> IsItemContainerAsync(
             string path)
         {
             if (path is null)
@@ -82,14 +82,14 @@ namespace PowerShellStorageDevice
 
             if (path.Length == 0)
             {
-                return new ValueTask<bool>(true);
+                return Task.FromResult(true);
             }
 
-            return new ValueTask<bool>(false);
+            return Task.FromResult(false);
         }
 
         /*
-        public async ValueTask GetChildItemsAsync(
+        public async Task GetChildItemsAsync(
             string path,
             bool recurse,
             CancellationToken cancellationToken)
@@ -100,7 +100,7 @@ namespace PowerShellStorageDevice
             }
         }
 
-        public async ValueTask GetChildItemsAsync(
+        public async Task GetChildItemsAsync(
             string path,
             bool recurse,
             uint depth,

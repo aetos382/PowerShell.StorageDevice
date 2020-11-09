@@ -5,18 +5,18 @@ namespace PSAsyncProvider
 {
     public interface IAsyncCmdletProvider
     {
-        ValueTask<ProviderInfo> StartAsync(
+        Task<ProviderInfo> StartAsync(
             ProviderInfo providerInfo)
         {
             throw new PSNotImplementedException();
         }
 
-        ValueTask<object> StartDynamicParametersAsync()
+        Task<object> StartDynamicParametersAsync()
         {
             throw new PSNotImplementedException();
         }
 
-        ValueTask StopAsync()
+        Task StopAsync()
         {
             throw new PSNotImplementedException();
         }

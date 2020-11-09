@@ -7,33 +7,33 @@ namespace PSAsyncProvider
     public interface IAsyncNavigationCmdletProvider :
         IAsyncContainerCmdletProvider
     {
-        ValueTask<string> GetChildNameAsync(
+        Task<string> GetChildNameAsync(
             string path)
         {
             throw new PSNotImplementedException();
         }
 
-        ValueTask<string> GetParentPathAsync(
+        Task<string> GetParentPathAsync(
             string path,
             string root)
         {
             throw new PSNotImplementedException();
         }
 
-        ValueTask<bool> IsItemContainerAsync(
+        Task<bool> IsItemContainerAsync(
             string path)
         {
             throw new PSNotImplementedException();
         }
 
-        ValueTask<string> MakePathAsync(
+        Task<string> MakePathAsync(
             string parent,
             string child)
         {
             throw new PSNotImplementedException();
         }
 
-        ValueTask<string> MakePathAsync(
+        Task<string> MakePathAsync(
             string parent,
             string child,
             bool childIsLeaf)
@@ -41,7 +41,7 @@ namespace PSAsyncProvider
             throw new PSNotImplementedException();
         }
 
-        ValueTask MoveItemAsync(
+        Task MoveItemAsync(
             string path,
             string destination,
             CancellationToken cancellationToken)
@@ -49,7 +49,7 @@ namespace PSAsyncProvider
             throw new PSNotImplementedException();
         }
 
-        ValueTask<object> MoveItemDynamicParametersAsync(
+        Task<object> MoveItemDynamicParametersAsync(
             string path,
             string destination,
             CancellationToken cancellationToken)
@@ -57,7 +57,7 @@ namespace PSAsyncProvider
             throw new PSNotImplementedException();
         }
 
-        ValueTask<string> NormalizeRelativePathAsync(
+        Task<string> NormalizeRelativePathAsync(
             string path,
             string basePath)
         {

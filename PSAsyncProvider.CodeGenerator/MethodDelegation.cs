@@ -29,10 +29,15 @@ namespace PSAsyncProvider.CodeGenerator
                 returnType,
                 comparer);
 
+            var returnTypeTask =
+                comparer.Equals(returnType, typeSymbols.Void) ?
+                    typeSymbols.Task :
+                    typeSymbols.TaskWithValue.Construct(returnType);
+
             var interfaceMethod = helper.InterfaceSymbol.GetMethodSymbol(
                 $"{methodName}Async",
                 parameterTypes,
-                typeSymbols.ValueTask.Construct(returnType),
+                returnTypeTask,
                 comparer);
 
             if (overriddenMethod is null ||

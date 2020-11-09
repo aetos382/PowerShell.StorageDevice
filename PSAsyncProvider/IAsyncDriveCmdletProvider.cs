@@ -12,18 +12,18 @@ namespace PSAsyncProvider
             throw new PSNotImplementedException();
         }
 
-        ValueTask<PSDriveInfo> NewDriveAsync(
+        Task<PSDriveInfo> NewDriveAsync(
             PSDriveInfo drive)
         {
             throw new PSNotImplementedException();
         }
 
-        ValueTask<object?> NewDriveDynamicParametersAsync()
+        Task<object?> NewDriveDynamicParametersAsync()
         {
             throw new PSNotImplementedException();
         }
 
-        ValueTask<PSDriveInfo> RemoveDriveAsync(
+        Task<PSDriveInfo> RemoveDriveAsync(
             PSDriveInfo drive)
         {
             throw new PSNotImplementedException();

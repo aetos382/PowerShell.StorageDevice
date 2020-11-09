@@ -13,31 +13,41 @@ namespace PSAsyncProvider.CodeGenerator
         {
             Requires.NotNull(compilation, nameof(compilation));
 
+            var voidSymbol = compilation.GetTypeByMetadataName(typeof(void).FullName);
             var objectSymbol = compilation.GetTypeByMetadataName(typeof(object).FullName);
             var stringSymbol = compilation.GetTypeByMetadataName(typeof(string).FullName);
             var booleanSymbol = compilation.GetTypeByMetadataName(typeof(bool).FullName);
-            var valueTaskSymbol = compilation.GetTypeByMetadataName(typeof(ValueTask<>).FullName);
+            var taskSymbol = compilation.GetTypeByMetadataName(typeof(Task).FullName);
+            var taskWithValueSymbol = compilation.GetTypeByMetadataName(typeof(Task<>).FullName);
 
-            if (objectSymbol is null ||
+            if (voidSymbol is null ||
+                objectSymbol is null ||
                 stringSymbol is null ||
                 booleanSymbol is null ||
-                valueTaskSymbol is null)
+                taskSymbol is null ||
+                taskWithValueSymbol is null)
             {
                 throw new InvalidOperationException();
             }
 
+            this.Void = voidSymbol;
             this.Object = objectSymbol;
             this.String = stringSymbol;
             this.Boolean = booleanSymbol;
-            this.ValueTask = valueTaskSymbol;
+            this.Task = taskSymbol;
+            this.TaskWithValue = taskWithValueSymbol;
         }
+
+        public ITypeSymbol Void { get; }
 
         public ITypeSymbol Object { get; }
 
         public ITypeSymbol String { get; }
         
         public ITypeSymbol Boolean { get; }
-        
-        public INamedTypeSymbol ValueTask { get; }
+
+        public ITypeSymbol Task { get; }
+
+        public INamedTypeSymbol TaskWithValue { get; }
     }
 }
