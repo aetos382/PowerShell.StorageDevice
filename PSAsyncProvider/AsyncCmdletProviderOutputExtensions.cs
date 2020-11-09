@@ -14,11 +14,13 @@ namespace PSAsyncProvider
             string path,
             bool isContainer,
             CancellationToken cancellationToken)
-            where TProvider : CmdletProvider, IAsyncCmdletProvider
+            where TProvider :
+                CmdletProvider,
+                IAsyncCmdletProvider
         {
             Requires.NotNull(provider, nameof(provider));
 
-            var context = AsyncProviderContext.GetContext(provider);
+            var context = AsyncMethodContext.GetContext(provider);
 
             var task = context.QueueAction(
                 provider,
@@ -33,11 +35,13 @@ namespace PSAsyncProvider
             this TProvider provider,
             string text,
             CancellationToken cancellationToken = default)
-            where TProvider : CmdletProvider, IAsyncCmdletProvider
+            where TProvider :
+                CmdletProvider,
+                IAsyncCmdletProvider
         {
             Requires.NotNull(provider, nameof(provider));
 
-            var context = AsyncProviderContext.GetContext(provider);
+            var context = AsyncMethodContext.GetContext(provider);
 
             var task = context.QueueAction(
                 provider,

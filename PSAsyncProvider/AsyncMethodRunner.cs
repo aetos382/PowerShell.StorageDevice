@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Management.Automation;
-using System.Management.Automation.Provider;
 using System.Runtime.ExceptionServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,18 +13,18 @@ namespace PSAsyncProvider
     internal static class AsyncMethodRunner
     {
         [return: MaybeNull]
-        public static TResult ExecuteAsyncMethod<TProvider, TState, TResult>(
-            TProvider provider,
-            Func<TProvider, TState, CancellationToken, Task<TResult>> asyncMethod,
+        public static TResult ExecuteAsyncMethod<TObject, TState, TResult>(
+            TObject associatedObject,
+            Func<TObject, TState, CancellationToken, Task<TResult>> asyncMethod,
             TState state)
-            where TProvider : CmdletProvider, IAsyncCmdletProvider
+            where TObject : class
         {
-            Requires.NotNull(provider, nameof(provider));
+            Requires.NotNull(associatedObject, nameof(associatedObject));
             Requires.NotNull(asyncMethod, nameof(asyncMethod));
 
-            using var context = AsyncProviderContext.Start(provider);
+            using var context = AsyncMethodContext.Start(associatedObject);
 
-            var task = asyncMethod(provider, state, context.GetCancellationToken());
+            var task = asyncMethod(associatedObject, state, context.GetCancellationToken());
 
             if (task is null)
             {
@@ -39,7 +38,7 @@ namespace PSAsyncProvider
             try
             {
                 task.ContinueWith(
-                    (t, state) => ((AsyncProviderContext)state)!.Close(),
+                    (t, state) => ((AsyncMethodContext<TObject>)state)!.Close(),
                     context,
                     CancellationToken.None,
                     TaskContinuationOptions.ExecuteSynchronously,

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Management.Automation.Provider;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -7,23 +6,19 @@ using Microsoft;
 
 namespace PSAsyncProvider
 {
-    internal class AwaitableAction<TProvider, TArgument, TResult>
-        where TProvider :
-            CmdletProvider,
-            IAsyncCmdletProvider
+    internal class AwaitableAction<TObject, TArgument, TResult>
     {
         internal AwaitableAction(
-            TProvider cmdlet,
-            Func<TProvider, TArgument, TResult> action,
+            TObject associatedObject,
+            Func<TObject, TArgument, TResult> action,
             TArgument argument,
             Action<object?>? postAction = null,
             object? postActionState = null,
             CancellationToken cancellationToken = default)
         {
-            Requires.NotNull(cmdlet, nameof(cmdlet));
             Requires.NotNull(action, nameof(action));
 
-            this._cmdlet = cmdlet;
+            this._associatedObject = associatedObject;
             this._action = action;
             this._argument = argument;
             this._postAction = postAction;
@@ -35,9 +30,9 @@ namespace PSAsyncProvider
                 false);
         }
 
-        private readonly TProvider _cmdlet;
+        private readonly TObject _associatedObject;
 
-        private readonly Func<TProvider, TArgument, TResult> _action;
+        private readonly Func<TObject, TArgument, TResult> _action;
 
         private readonly TArgument _argument;
 
@@ -63,7 +58,7 @@ namespace PSAsyncProvider
                     return;
                 }
 
-                result = this._action(this._cmdlet, this._argument);
+                result = this._action(this._associatedObject, this._argument);
             }
             catch (OperationCanceledException ex)
             {
