@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Provider;
@@ -10,8 +11,9 @@ using Microsoft;
 
 namespace PSAsyncProvider
 {
-    public static class AsyncMethodRunner
+    internal static class AsyncMethodRunner
     {
+        [return: MaybeNull]
         public static TResult ExecuteAsyncMethod<TProvider, TState, TResult>(
             TProvider provider,
             Func<TProvider, TState, CancellationToken, Task<TResult>> asyncMethod,
@@ -77,21 +79,6 @@ namespace PSAsyncProvider
             exceptionDispatcher?.Throw();
 
             return result;
-        }
-
-        public static void ExecuteAsyncMethod<TProvider, TState>(
-            TProvider provider,
-            Func<TProvider, TState, CancellationToken, Task> asyncMethod,
-            TState state)
-            where TProvider : CmdletProvider, IAsyncCmdletProvider
-        {
-            ExecuteAsyncMethod(
-                provider,
-                async (p, s, c) => {
-                    await asyncMethod(p, s, c).ConfigureAwait(false);
-                    return Unit.Instance;
-                },
-                state);
         }
     }
 }

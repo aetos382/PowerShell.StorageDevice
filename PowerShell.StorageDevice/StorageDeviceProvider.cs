@@ -37,8 +37,7 @@ namespace PowerShellStorageDevice
         protected override ProviderInfo Start(
             ProviderInfo providerInfo)
         {
-            var result = AsyncMethodRunner.ExecuteAsyncMethod(
-                this,
+            var result = this.ExecuteAsyncAction(
                 (p, s, c) => p.StartAsync(s),
                 providerInfo);
 
