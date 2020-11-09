@@ -55,7 +55,7 @@ namespace PSAsyncProvider.CodeGenerator
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            code = this.GenerateIsItemContainer(concreteProviderType);
+            code = this._isItemContainer.GenerateMethod(concreteProviderType);
             if (!string.IsNullOrWhiteSpace(code))
             {
                 yield return code!;
@@ -63,49 +63,11 @@ namespace PSAsyncProvider.CodeGenerator
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            code = this.GenerateNormalizeRelativePath(concreteProviderType);
+            code = this._normalizeRelativePath.GenerateMethod(concreteProviderType);
             if (!string.IsNullOrWhiteSpace(code))
             {
                 yield return code!;
             }
-        }
-
-        private string? GenerateIsItemContainer(
-            ITypeSymbol concreteProviderType)
-        {
-            if (!this._isItemContainer.ShouldGenerateMethod(concreteProviderType))
-            {
-                return null;
-            }
-
-            return @"
-// Generated Method
-protected override bool IsItemContainer(string path)
-{
-    this.WriteVerbose($""IsItemContainer(\""{path}\"");"");
-    var result = this.IsItemContainerAsync(path).Result;
-    this.WriteVerbose($""returns: {result}"");
-    return result;
-}";
-        }
-
-        private string? GenerateNormalizeRelativePath(
-            ITypeSymbol concreteProviderType)
-        {
-            if (!this._normalizeRelativePath.ShouldGenerateMethod(concreteProviderType))
-            {
-                return null;
-            }
-
-            return @"
-// Generated Method
-protected override bool NormalizeRelativePath(string path, string basePath)
-{
-    this.WriteVerbose($""NormalizeRelativePath(\""{path}\"", \""{basePath}\"");"");
-    var result = this.NormalizeRelativePathAsync(path, basePath).Result;
-    this.WriteVerbose($""returns: {result}"");
-    return result;
-}";
         }
 
         private readonly AsyncCmdletProviderMethodGenerationHelper _helper;

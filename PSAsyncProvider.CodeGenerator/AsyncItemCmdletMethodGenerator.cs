@@ -76,31 +76,11 @@ namespace PSAsyncProvider.CodeGenerator
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            code = this.GenerateItemExists(concreteProviderType);
+            code = this._itemExists.GenerateMethod(concreteProviderType);
             if (!string.IsNullOrWhiteSpace(code))
             {
                 yield return code!;
             }
-        }
-
-        private string? GenerateItemExists(
-            ITypeSymbol concreteProviderType)
-        {
-            if (!this._itemExists.ShouldGenerateMethod(concreteProviderType))
-            {
-                return null;
-            }
-
-            return @"
-// Generated Method
-protected override bool ItemExists(string path)
-{
-    this.WriteVerbose($""ItemExists(\""{path}\"")"");
-    var result = this.ItemExistsAsync(path).Result;
-    this.WriteVerbose($""returns: {result}"");
-
-    return result;
-}";
         }
 
         private string? GenerateIsValidPath(

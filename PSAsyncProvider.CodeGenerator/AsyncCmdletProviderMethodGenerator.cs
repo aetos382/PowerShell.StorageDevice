@@ -66,14 +66,14 @@ namespace PSAsyncProvider.CodeGenerator
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            code = this.GenerateStart(concreteProviderType);
+            code = this._start.GenerateMethod(concreteProviderType);
             if (!string.IsNullOrWhiteSpace(code))
             {
                 yield return code!;
 
                 cancellationToken.ThrowIfCancellationRequested();
 
-                code = this.GenerateStartDynamicParmaeters(concreteProviderType);
+                code = this._startDynamicParameters.GenerateMethod(concreteProviderType);
                 if (!string.IsNullOrWhiteSpace(code))
                 {
                     yield return code!;
@@ -82,46 +82,6 @@ namespace PSAsyncProvider.CodeGenerator
 
             yield break;
         }
-
-        private string? GenerateStart(
-            ITypeSymbol concreteProviderType)
-        {
-            if (!this._start.ShouldGenerateMethod(concreteProviderType))
-            {
-                return null;
-            }
-
-            return @"
-// Generated Method
-protected override System.Management.Automation.ProviderInfo Start(System.Management.Automation.ProviderInfo providerInfo)
-{
-    this.WriteVerbose($""IsItemContainer(\""{path}\"");"");
-    var result = this.StartAsync(providerInfo).Result;
-    this.WriteVerbose($""returns: {result}"");
-    return result;
-}
-";
-        }
-
-        private string? GenerateStartDynamicParmaeters(
-            ITypeSymbol concreteProviderType)
-        {
-            if (!this._startDynamicParameters.ShouldGenerateMethod(concreteProviderType))
-            {
-                return null;
-            }
-
-            return @"
-// Generated Method
-protected override object StartDynamicParameters()
-{
-    this.WriteVerbose($""IsItemContainer(\""{path}\"");"");
-    var result = this.StartDynamicParametersAsync().Result;
-    this.WriteVerbose($""returns: {result}"");
-    return result;
-}
-";
-            }
 
         private readonly AsyncCmdletProviderMethodGenerationHelper _helper;
 

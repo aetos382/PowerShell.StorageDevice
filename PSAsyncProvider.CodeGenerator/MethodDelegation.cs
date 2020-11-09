@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using Microsoft;
 using Microsoft.CodeAnalysis;
@@ -44,8 +45,11 @@ namespace PSAsyncProvider.CodeGenerator
             this.BaseProviderMethod = overriddenMethod;
             this.AsyncInterfaceMethod = interfaceMethod;
 
+            this._typeSymbols = typeSymbols;
             this._symbolComparer = comparer;
         }
+
+        private readonly TypeSymbols _typeSymbols;
 
         public IMethodSymbol BaseProviderMethod { get; }
 
@@ -77,7 +81,6 @@ namespace PSAsyncProvider.CodeGenerator
 
             return interfaceMethod;
         }
-
 
         public bool IsSyncMethodImplemented(
             ITypeSymbol concreteProviderType)
@@ -116,6 +119,63 @@ namespace PSAsyncProvider.CodeGenerator
             }
 
             return true;
+        }
+
+        public string? GenerateMethod(
+            ITypeSymbol concreteProviderType)
+        {
+            Requires.NotNull(concreteProviderType, nameof(concreteProviderType));
+
+            if (!this.ShouldGenerateMethod(concreteProviderType))
+            {
+                return null;
+            }
+
+            var methodName = this.MethodName;
+            var returnTypeName = this.BaseProviderMethod.ReturnType.ToDisplayString();
+
+            var parameters = this.BaseProviderMethod.Parameters
+                .Select(x => $"{x.Type.ToDisplayString()} {x.Name}");
+
+            var parameterList = string.Join(", ", parameters);
+
+            var arguments = this.BaseProviderMethod.Parameters
+                .Select(x => $"{x.Name}");
+
+            var argumentList = string.Join(", ", arguments);
+
+            var argumentsToPrint = this.BaseProviderMethod.Parameters
+                .Select(x =>
+                    this._symbolComparer.Equals(x.Type, this._typeSymbols.String) ?
+                    $"\\\"{{{x.Name}}}\\\"" : $"{{{x.Name}}}");
+
+            var argumentListToPrint = string.Join(", ", argumentsToPrint);
+
+            if (this.BaseProviderMethod.ReturnsVoid)
+            {
+                return $@"
+// Generated Method
+protected override void {methodName}({parameterList})
+{{
+    this.WriteVerbose($""{methodName}({argumentListToPrint});"");
+    this.{methodName}Async({argumentList});
+}}
+";
+            }
+            else
+            {
+                return $@"
+// Generated Method
+protected override {returnTypeName} {methodName}({parameterList})
+{{
+    this.WriteVerbose($""{methodName}({argumentListToPrint});"");
+    var result = this.{methodName}Async({argumentList}).Result;
+    this.WriteVerbose($""returns: {{result}}"");
+    return result;
+}}
+";
+            }
+
         }
     }
 }
