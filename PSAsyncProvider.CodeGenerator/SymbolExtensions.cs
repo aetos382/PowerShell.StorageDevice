@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Microsoft;
 using Microsoft.CodeAnalysis;
 
 namespace PSAsyncProvider.CodeGenerator
@@ -13,8 +14,12 @@ namespace PSAsyncProvider.CodeGenerator
             ITypeSymbol attribute,
             bool allowSubType,
             bool noInherit,
-            IEqualityComparer<ISymbol?>? comparer)
+            IEqualityComparer<ISymbol?> comparer)
         {
+            Requires.NotNull(symbol, nameof(symbol));
+            Requires.NotNull(attribute, nameof(attribute));
+            Requires.NotNull(comparer, nameof(comparer));
+
             foreach (var attributeData in symbol.GetAttributes())
             {
                 var attributeClass = attributeData.AttributeClass;
@@ -51,6 +56,8 @@ namespace PSAsyncProvider.CodeGenerator
 
             if (hasInherited)
             {
+                Assumes.Is<bool>(value.Value);
+
                 inherit = (bool)value.Value;
             }
 
@@ -71,6 +78,8 @@ namespace PSAsyncProvider.CodeGenerator
         public static ISymbol? GetBaseSymbol(
             this ISymbol symbol)
         {
+            Requires.NotNull(symbol, nameof(symbol));
+
             if (symbol is ITypeSymbol typeSymbol)
             {
                 return typeSymbol.BaseType;

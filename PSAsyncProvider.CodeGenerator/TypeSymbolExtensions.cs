@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
+using Microsoft;
 using Microsoft.CodeAnalysis;
 
 namespace PSAsyncProvider.CodeGenerator
@@ -13,6 +14,10 @@ namespace PSAsyncProvider.CodeGenerator
             bool allowSubType,
             IEqualityComparer<ISymbol?> comparer)
         {
+            Requires.NotNull(type, nameof(type));
+            Requires.NotNull(testType, nameof(testType));
+            Requires.NotNull(comparer, nameof(comparer));
+
             if (comparer.Equals(type, testType))
             {
                 return true;
@@ -43,6 +48,10 @@ namespace PSAsyncProvider.CodeGenerator
             bool thisTypeOnly,
             IEqualityComparer<ISymbol?> comparer)
         {
+            Requires.NotNull(type, nameof(type));
+            Requires.NotNull(interfaceType, nameof(interfaceType));
+            Requires.NotNull(comparer, nameof(comparer));
+
             var interfaces = thisTypeOnly ?
                 type.Interfaces :
                 type.AllInterfaces;
@@ -55,6 +64,10 @@ namespace PSAsyncProvider.CodeGenerator
             IMethodSymbol baseSymbol,
             IEqualityComparer<ISymbol?> comparer)
         {
+            Requires.NotNull(type, nameof(type));
+            Requires.NotNull(baseSymbol, nameof(baseSymbol));
+            Requires.NotNull(comparer, nameof(comparer));
+
             var methods = type.GetMembers(baseSymbol.Name).OfType<IMethodSymbol>();
 
             foreach (var method in methods)
@@ -80,6 +93,11 @@ namespace PSAsyncProvider.CodeGenerator
             ITypeSymbol returnType,
             IEqualityComparer<ISymbol?> comparer)
         {
+            Requires.NotNull(type, nameof(type));
+            Requires.NotNull(name, nameof(name));
+            Requires.NotNull(returnType, nameof(returnType));
+            Requires.NotNull(comparer, nameof(comparer));
+
             var methods = type.GetMembers(name).OfType<IMethodSymbol>();
 
             foreach (var method in methods)

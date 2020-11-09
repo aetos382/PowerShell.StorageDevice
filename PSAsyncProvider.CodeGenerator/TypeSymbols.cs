@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 
+using Microsoft;
 using Microsoft.CodeAnalysis;
 
 namespace PSAsyncProvider.CodeGenerator
@@ -9,10 +11,25 @@ namespace PSAsyncProvider.CodeGenerator
         public TypeSymbols(
             Compilation compilation)
         {
-            this.Object = compilation.GetTypeByMetadataName(typeof(object).FullName);
-            this.String = compilation.GetTypeByMetadataName(typeof(string).FullName);
-            this.Boolean = compilation.GetTypeByMetadataName(typeof(bool).FullName);
-            this.ValueTask = compilation.GetTypeByMetadataName(typeof(ValueTask<>).FullName);
+            Requires.NotNull(compilation, nameof(compilation));
+
+            var objectSymbol = compilation.GetTypeByMetadataName(typeof(object).FullName);
+            var stringSymbol = compilation.GetTypeByMetadataName(typeof(string).FullName);
+            var booleanSymbol = compilation.GetTypeByMetadataName(typeof(bool).FullName);
+            var valueTaskSymbol = compilation.GetTypeByMetadataName(typeof(ValueTask<>).FullName);
+
+            if (objectSymbol is null ||
+                stringSymbol is null ||
+                booleanSymbol is null ||
+                valueTaskSymbol is null)
+            {
+                throw new InvalidOperationException();
+            }
+
+            this.Object = objectSymbol;
+            this.String = stringSymbol;
+            this.Boolean = booleanSymbol;
+            this.ValueTask = valueTaskSymbol;
         }
 
         public ITypeSymbol Object { get; }

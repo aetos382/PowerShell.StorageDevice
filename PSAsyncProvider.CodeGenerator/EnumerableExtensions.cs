@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft;
+
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PSAsyncProvider.CodeGenerator
 {
@@ -8,8 +11,12 @@ namespace PSAsyncProvider.CodeGenerator
             this IEnumerable<KeyValuePair<TKey, TValue>> source,
             TKey key,
             IEqualityComparer<TKey>? keyComparer,
+
+            [MaybeNullWhen(false)]
             out TValue value)
         {
+            Requires.NotNull(source, nameof(source));
+
             keyComparer ??= EqualityComparer<TKey>.Default;
 
             foreach (var entry in source)

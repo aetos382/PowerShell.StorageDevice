@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
+using Microsoft;
 using Microsoft.CodeAnalysis;
 
 namespace PSAsyncProvider.CodeGenerator
@@ -11,11 +13,22 @@ namespace PSAsyncProvider.CodeGenerator
             string providerTypeName,
             string interfaceName)
         {
+            Requires.NotNull(context, nameof(context));
+            Requires.NotNull(providerTypeName, nameof(providerTypeName));
+            Requires.NotNull(interfaceName, nameof(interfaceName));
+
             var compilation = context.Compilation;
 
             var attributeSymbol = compilation.GetTypeByMetadataName("PSAsyncProvider.GenerateMemberAttribute");
             var providerSymbol = compilation.GetTypeByMetadataName(providerTypeName);
             var interfaceSymbol = compilation.GetTypeByMetadataName(interfaceName);
+
+            if (attributeSymbol is null ||
+                providerSymbol is null ||
+                interfaceSymbol is null)
+            {
+                throw new InvalidOperationException();
+            }
 
             this.Context = context;
             this._attributeSymbol = attributeSymbol;
@@ -24,21 +37,23 @@ namespace PSAsyncProvider.CodeGenerator
         }
 
         public bool IsTargetType(
-            ITypeSymbol symbol)
+            ITypeSymbol concreteProviderType)
         {
+            Requires.NotNull(concreteProviderType, nameof(concreteProviderType));
+
             var comparer = this.Context.SymbolComparer;
 
-            if (!symbol.HasAttribute(this._attributeSymbol, true, false, comparer))
+            if (!concreteProviderType.HasAttribute(this._attributeSymbol, true, false, comparer))
             {
                 return false;
             }
 
-            if (!symbol.IsType(this.ProviderSymbol, true, comparer))
+            if (!concreteProviderType.IsType(this.ProviderSymbol, true, comparer))
             {
                 return false;
             }
 
-            if (!symbol.HasInterface(this.InterfaceSymbol, false, comparer))
+            if (!concreteProviderType.HasInterface(this.InterfaceSymbol, false, comparer))
             {
                 return false;
             }
@@ -51,6 +66,9 @@ namespace PSAsyncProvider.CodeGenerator
             IEnumerable<ITypeSymbol>? parameterTypes,
             ITypeSymbol returnType)
         {
+            Requires.NotNull(methodName, nameof(methodName));
+            Requires.NotNull(returnType, nameof(returnType));
+
             return new MethodDelegation(
                 this,
                 methodName,

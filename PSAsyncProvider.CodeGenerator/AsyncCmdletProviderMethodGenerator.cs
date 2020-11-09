@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
+using Microsoft;
 using Microsoft.CodeAnalysis;
 
 namespace PSAsyncProvider.CodeGenerator
@@ -12,6 +13,8 @@ namespace PSAsyncProvider.CodeGenerator
         public AsyncCmdletProviderMethodGenerator(
             CodeGenerationContext context)
         {
+            Requires.NotNull(context, nameof(context));
+
             var helper = new AsyncCmdletProviderMethodGenerationHelper(
                 context,
                 "System.Management.Automation.Provider.CmdletProvider",
@@ -50,17 +53,30 @@ namespace PSAsyncProvider.CodeGenerator
             ITypeSymbol concreteProviderType,
             CancellationToken cancellationToken)
         {
-            string code;
+            Requires.NotNull(concreteProviderType, nameof(concreteProviderType));
 
-            code = this.GenerateStart(concreteProviderType, cancellationToken);
+            return this.GenerateCodeCore(concreteProviderType, cancellationToken);
+        }
+
+        private IEnumerable<string> GenerateCodeCore(
+            ITypeSymbol concreteProviderType,
+            CancellationToken cancellationToken)
+        {
+            string? code;
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            code = this.GenerateStart(concreteProviderType);
             if (!string.IsNullOrWhiteSpace(code))
             {
-                yield return code;
+                yield return code!;
 
-                code = this.GenerateStartDynamicParmaeters(concreteProviderType, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
+
+                code = this.GenerateStartDynamicParmaeters(concreteProviderType);
                 if (!string.IsNullOrWhiteSpace(code))
                 {
-                    yield return code;
+                    yield return code!;
                 }
             }
 
@@ -68,8 +84,7 @@ namespace PSAsyncProvider.CodeGenerator
         }
 
         private string? GenerateStart(
-            ITypeSymbol concreteProviderType,
-            CancellationToken cancellationToken)
+            ITypeSymbol concreteProviderType)
         {
             if (!this._start.ShouldGenerateMethod(concreteProviderType))
             {
@@ -89,8 +104,7 @@ protected override System.Management.Automation.ProviderInfo Start(System.Manage
         }
 
         private string? GenerateStartDynamicParmaeters(
-            ITypeSymbol concreteProviderType,
-            CancellationToken cancellationToken)
+            ITypeSymbol concreteProviderType)
         {
             if (!this._startDynamicParameters.ShouldGenerateMethod(concreteProviderType))
             {

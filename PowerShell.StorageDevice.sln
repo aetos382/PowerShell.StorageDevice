@@ -9,7 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSAsyncProvider", "PSAsyncP
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSAsyncProvider.UnitTests", "PSAsyncProvider.UnitTests\PSAsyncProvider.UnitTests.csproj", "{EE1A2695-7135-47CD-9DAF-ED19E1A1A2D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PSAsyncProvider.CodeGenerator", "PSAsyncProvider.CodeGenerator\PSAsyncProvider.CodeGenerator.csproj", "{A868937C-EB43-4B50-B7C8-952ADB667662}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PSAsyncProvider.CodeGenerator", "PSAsyncProvider.CodeGenerator\PSAsyncProvider.CodeGenerator.csproj", "{A868937C-EB43-4B50-B7C8-952ADB667662}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{25EC673A-F5D4-4C7F-BECB-34C968225C84}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

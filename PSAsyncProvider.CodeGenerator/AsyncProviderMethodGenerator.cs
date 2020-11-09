@@ -3,6 +3,7 @@ using System.Linq;
 using System.IO;
 using System.Text;
 
+using Microsoft;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -40,9 +41,7 @@ namespace PSAsyncProvider
                 return;
             }
 
-            var compilation = context.Compilation;
-
-            compilation = compilation.AddSyntaxTrees(
+            var compilation = context.Compilation.AddSyntaxTrees(
                 CSharpSyntaxTree.ParseText(
                     attributeSource,
                     (CSharpParseOptions)context.ParseOptions,
@@ -76,6 +75,8 @@ namespace PSAsyncProvider
 
                 if (hasNamespace)
                 {
+                    Assumes.NotNull(ns);
+
                     codes.Add($@"namespace {ns.ToDisplayString()}
 {{
 ");
@@ -162,7 +163,6 @@ namespace PSAsyncProvider
             GeneratorInitializationContext context)
         {
             // System.Diagnostics.Debugger.Launch();
-
             context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
         }
 
@@ -183,6 +183,8 @@ namespace PSAsyncProvider
             public void OnVisitSyntaxNode(
                 SyntaxNode syntaxNode)
             {
+                Requires.NotNull(syntaxNode, nameof(syntaxNode));
+
                 if (syntaxNode is not ClassDeclarationSyntax classSyntax)
                 {
                     return;

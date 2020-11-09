@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
+using Microsoft;
 using Microsoft.CodeAnalysis;
 
 namespace PSAsyncProvider.CodeGenerator
@@ -12,6 +14,10 @@ namespace PSAsyncProvider.CodeGenerator
             IEnumerable<ITypeSymbol>? parameterTypes,
             ITypeSymbol returnType)
         {
+            Requires.NotNull(helper, nameof(helper));
+            Requires.NotNull(methodName, nameof(methodName));
+            Requires.NotNull(returnType, nameof(returnType));
+
             var comparer = helper.Context.SymbolComparer;
 
             var typeSymbols = helper.Context.TypeSymbols;
@@ -28,19 +34,18 @@ namespace PSAsyncProvider.CodeGenerator
                 typeSymbols.ValueTask.Construct(returnType),
                 comparer);
 
+            if (overriddenMethod is null ||
+                interfaceMethod is null)
+            {
+                throw new InvalidOperationException();
+            }
+
             this.MethodName = methodName;
             this.BaseProviderMethod = overriddenMethod;
             this.AsyncInterfaceMethod = interfaceMethod;
 
-            this._helper = helper;
             this._symbolComparer = comparer;
         }
-
-        private readonly AsyncCmdletProviderMethodGenerationHelper _helper;
-
-        public ITypeSymbol BaseProviderType { get; }
-
-        public ITypeSymbol InterfaceType { get; }
 
         public IMethodSymbol BaseProviderMethod { get; }
 
@@ -50,9 +55,11 @@ namespace PSAsyncProvider.CodeGenerator
 
         private readonly IEqualityComparer<ISymbol?> _symbolComparer;
 
-        public ISymbol GetConcreteSyncMethod(
+        public ISymbol? GetConcreteSyncMethod(
             ITypeSymbol concreteProviderType)
         {
+            Requires.NotNull(concreteProviderType, nameof(concreteProviderType));
+
             var baseMethod = concreteProviderType.GetOverrideSymbol(
                 this.BaseProviderMethod,
                 this._symbolComparer);
@@ -60,9 +67,11 @@ namespace PSAsyncProvider.CodeGenerator
             return baseMethod;
         }
 
-        public ISymbol GetInterfaceAsyncMethod(
+        public ISymbol? GetInterfaceAsyncMethod(
             ITypeSymbol concreteProviderType)
         {
+            Requires.NotNull(concreteProviderType, nameof(concreteProviderType));
+
             var interfaceMethod = concreteProviderType.FindImplementationForInterfaceMember(
                 this.AsyncInterfaceMethod);
 
@@ -73,6 +82,8 @@ namespace PSAsyncProvider.CodeGenerator
         public bool IsSyncMethodImplemented(
             ITypeSymbol concreteProviderType)
         {
+            Requires.NotNull(concreteProviderType, nameof(concreteProviderType));
+
             var syncMethod = this.GetConcreteSyncMethod(concreteProviderType);
             return syncMethod is not null;
         }
@@ -80,6 +91,8 @@ namespace PSAsyncProvider.CodeGenerator
         public bool IsAsyncMethodImplemented(
             ITypeSymbol concreteProviderType)
         {
+            Requires.NotNull(concreteProviderType, nameof(concreteProviderType));
+
             var interfaceMethod = this.GetInterfaceAsyncMethod(concreteProviderType);
 
             return
@@ -90,6 +103,8 @@ namespace PSAsyncProvider.CodeGenerator
         public bool ShouldGenerateMethod(
             ITypeSymbol concreteProviderType)
         {
+            Requires.NotNull(concreteProviderType, nameof(concreteProviderType));
+
             if (this.IsSyncMethodImplemented(concreteProviderType))
             {
                 return false;

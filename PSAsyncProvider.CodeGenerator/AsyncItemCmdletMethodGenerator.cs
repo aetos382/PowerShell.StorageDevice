@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 
+using Microsoft;
 using Microsoft.CodeAnalysis;
 
 namespace PSAsyncProvider.CodeGenerator
@@ -20,19 +22,27 @@ namespace PSAsyncProvider.CodeGenerator
 
             var typeSymbols = context.TypeSymbols;
 
-            this._itemExists = helper.CreateMethodDelegation(
+            var itemExists = helper.CreateMethodDelegation(
                 "ItemExists",
                 new[] { typeSymbols.String },
                 typeSymbols.Boolean);
 
-            this._isValidPath = providerSymbol.GetMethodSymbol(
+            var isValidPath = providerSymbol.GetMethodSymbol(
                 "IsValidPath",
                 new[] { typeSymbols.String },
                 typeSymbols.Boolean,
                 context.SymbolComparer);
 
+            if (itemExists is null ||
+                isValidPath is null)
+            {
+                throw new InvalidOperationException();
+            }
+
             this._helper = helper;
             this._symbolComparer = context.SymbolComparer;
+            this._itemExists = itemExists;
+            this._isValidPath = isValidPath;
         }
 
         public bool IsTargetType(
@@ -40,29 +50,41 @@ namespace PSAsyncProvider.CodeGenerator
         {
             return this._helper.IsTargetType(symbol);
         }
-
+        
         public IEnumerable<string> GenerateCode(
             ITypeSymbol concreteProviderType,
             CancellationToken cancellationToken)
         {
-            string code;
+            Requires.NotNull(concreteProviderType, nameof(concreteProviderType));
 
-            code = this.GenerateIsValidPath(concreteProviderType, cancellationToken);
+            return this.GenerateCodeCore(concreteProviderType, cancellationToken);
+        }
+
+        private IEnumerable<string> GenerateCodeCore(
+            ITypeSymbol concreteProviderType,
+            CancellationToken cancellationToken)
+        {
+            string? code;
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            code = this.GenerateIsValidPath(concreteProviderType);
             if (!string.IsNullOrWhiteSpace(code))
             {
-                yield return code;
+                yield return code!;
             }
 
-            code = this.GenerateItemExists(concreteProviderType, cancellationToken);
+            cancellationToken.ThrowIfCancellationRequested();
+
+            code = this.GenerateItemExists(concreteProviderType);
             if (!string.IsNullOrWhiteSpace(code))
             {
-                yield return code;
+                yield return code!;
             }
         }
 
         private string? GenerateItemExists(
-            ITypeSymbol concreteProviderType,
-            CancellationToken cancellationToken)
+            ITypeSymbol concreteProviderType)
         {
             if (!this._itemExists.ShouldGenerateMethod(concreteProviderType))
             {
@@ -81,9 +103,8 @@ protected override bool ItemExists(string path)
 }";
         }
 
-        private string GenerateIsValidPath(
-            ITypeSymbol concreteProviderType,
-            CancellationToken cancellation)
+        private string? GenerateIsValidPath(
+            ITypeSymbol concreteProviderType)
         {
             var isValidPath = concreteProviderType.GetOverrideSymbol(
                 this._isValidPath,
