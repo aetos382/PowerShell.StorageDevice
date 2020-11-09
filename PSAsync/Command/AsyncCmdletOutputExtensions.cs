@@ -10,6 +10,51 @@ namespace PSAsync
 {
     public static class AsyncCmdletOutputExtensions
     {
+        public static Task WriteObjectAsync<TCmdlet>(
+            this TCmdlet cmdlet,
+            object sendToPipeline,
+            CancellationToken cancellationToken = default)
+            where TCmdlet :
+                Cmdlet,
+                IAsyncCmdlet
+        {
+            Requires.NotNull(cmdlet, nameof(cmdlet));
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var context = AsyncMethodContext.GetContext(cmdlet);
+
+            var task = context.QueueAction(
+                (c, a, _) => c.WriteObject(a),
+                sendToPipeline,
+                cancellationToken);
+
+            return task;
+        }
+
+        public static Task WriteObjectAsync<TCmdlet>(
+            this TCmdlet cmdlet,
+            object sendToPipeline,
+            bool enumerateCollection,
+            CancellationToken cancellationToken = default)
+            where TCmdlet :
+                Cmdlet,
+                IAsyncCmdlet
+        {
+            Requires.NotNull(cmdlet, nameof(cmdlet));
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var context = AsyncMethodContext.GetContext(cmdlet);
+
+            var task = context.QueueAction(
+                (c, a, _) => c.WriteObject(a.sendToPipeline, a.enumerateCollection),
+                (sendToPipeline, enumerateCollection),
+                cancellationToken);
+
+            return task;
+        }
+
         public static Task<ShouldContinueResult> ShouldContinueAsync<TCmdlet>(
             this TCmdlet cmdlet,
             string query,

@@ -14,7 +14,7 @@ namespace PSAsync
             CancellationToken cancellationToken = default)
             where TObject :
                 class,
-                ICommonOutput
+                ICmdlet
         {
             Requires.NotNull(associatedObject, nameof(associatedObject));
 
@@ -36,7 +36,7 @@ namespace PSAsync
             CancellationToken cancellationToken = default)
             where TObject :
                 class,
-                ICommonOutput
+                ICmdlet
         {
             Requires.NotNull(associatedObject, nameof(associatedObject));
 
@@ -58,7 +58,7 @@ namespace PSAsync
             CancellationToken cancellationToken = default)
             where TObject :
                 class,
-                ICommonOutput
+                ICmdlet
         {
             Requires.NotNull(associatedObject, nameof(associatedObject));
 
@@ -78,7 +78,7 @@ namespace PSAsync
             CancellationToken cancellationToken = default)
             where TObject :
                 class,
-                ICommonOutput
+                ICmdlet
         {
             Requires.NotNull(associatedObject, nameof(associatedObject));
 
@@ -101,7 +101,7 @@ namespace PSAsync
             CancellationToken cancellationToken = default)
             where TObject :
                 class,
-                ICommonOutput
+                ICmdlet
         {
             Requires.NotNull(associatedObject, nameof(associatedObject));
 
@@ -123,7 +123,7 @@ namespace PSAsync
             CancellationToken cancellationToken = default)
             where TObject :
                 class,
-                ICommonOutput
+                ICmdlet
         {
             Requires.NotNull(associatedObject, nameof(associatedObject));
 
@@ -145,7 +145,7 @@ namespace PSAsync
             CancellationToken cancellationToken = default)
             where TObject :
                 class,
-                ICommonOutput
+                ICmdlet
         {
             Requires.NotNull(associatedObject, nameof(associatedObject));
 
@@ -168,7 +168,7 @@ namespace PSAsync
             CancellationToken cancellationToken = default)
             where TObject :
                 class,
-                ICommonOutput
+                ICmdlet
         {
             Requires.NotNull(associatedObject, nameof(associatedObject));
 
@@ -192,7 +192,7 @@ namespace PSAsync
             CancellationToken cancellationToken = default)
             where TObject :
                 class,
-                ICommonOutput
+                ICmdlet
         {
             Requires.NotNull(associatedObject, nameof(associatedObject));
 
@@ -219,7 +219,7 @@ namespace PSAsync
             CancellationToken cancellationToken = default)
             where TObject :
                 class,
-                ICommonOutput
+                ICmdlet
         {
             Requires.NotNull(associatedObject, nameof(associatedObject));
 

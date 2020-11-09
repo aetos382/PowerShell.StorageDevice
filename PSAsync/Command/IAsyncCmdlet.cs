@@ -1,27 +1,28 @@
-﻿using System.Threading;
+﻿using System.Management.Automation;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace PSAsync.Command
 {
     public interface IAsyncCmdlet :
-        ICmdletOutput
+        ICmdlet
     {
         Task BeginProcessingAsync(
             CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            throw new PSNotImplementedException();
         }
 
         Task ProcessRecordAsync(
             CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            throw new PSNotImplementedException();
         }
 
         Task EndProcessingAsync(
             CancellationToken cancellationToken)
         {
-            return Task.CompletedTask;
+            throw new PSNotImplementedException();
         }
     }
 }

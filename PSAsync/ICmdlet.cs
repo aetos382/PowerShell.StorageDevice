@@ -2,7 +2,7 @@
 
 namespace PSAsync
 {
-    public interface ICommonOutput
+    public interface ICmdlet
     {
         void WriteError(
             ErrorRecord errorRecord);
