@@ -30,7 +30,7 @@ namespace PSAsyncProvider
             string parent,
             string child)
         {
-            throw new PSNotSupportedException();
+            throw new PSNotImplementedException();
         }
 
         ValueTask<string> MakePathAsync(
@@ -38,7 +38,7 @@ namespace PSAsyncProvider
             string child,
             bool childIsLeaf)
         {
-            throw new PSNotSupportedException();
+            throw new PSNotImplementedException();
         }
 
         ValueTask MoveItemAsync(
@@ -46,7 +46,7 @@ namespace PSAsyncProvider
             string destination,
             CancellationToken cancellationToken)
         {
-            throw new PSNotSupportedException();
+            throw new PSNotImplementedException();
         }
 
         ValueTask<object> MoveItemDynamicParametersAsync(
@@ -54,7 +54,7 @@ namespace PSAsyncProvider
             string destination,
             CancellationToken cancellationToken)
         {
-            return default;
+            throw new PSNotImplementedException();
         }
 
         ValueTask<string> NormalizeRelativePathAsync(

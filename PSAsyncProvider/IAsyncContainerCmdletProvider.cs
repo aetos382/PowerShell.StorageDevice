@@ -11,8 +11,7 @@ namespace PSAsyncProvider
             string path,
             string filter)
         {
-            return new ValueTask<PathConversionResult>(
-                PathConversionResult.NotAltered(path, filter));
+            throw new PSNotImplementedException();
         }
 
         ValueTask CopyItemAsync(
@@ -21,7 +20,7 @@ namespace PSAsyncProvider
             bool recurse,
             CancellationToken cancellationToken)
         {
-            throw new PSNotSupportedException();
+            throw new PSNotImplementedException();
         }
 
         ValueTask<object?> CopyItemDynamicParametersAsync(
@@ -29,7 +28,7 @@ namespace PSAsyncProvider
             string copyPath,
             bool recurse)
         {
-            return default;
+            throw new PSNotImplementedException();
         }
 
         ValueTask GetChildItemsAsync(
@@ -37,7 +36,7 @@ namespace PSAsyncProvider
             bool recurse,
             CancellationToken cancellationToken)
         {
-            throw new PSNotSupportedException();
+            throw new PSNotImplementedException();
         }
 
         ValueTask GetChildItemsAsync(
@@ -46,14 +45,14 @@ namespace PSAsyncProvider
             uint depth,
             CancellationToken cancellationToken)
         {
-            throw new PSNotSupportedException();
+            throw new PSNotImplementedException();
         }
 
         ValueTask<object> GetChildItemsDynamicParametersAsync(
             string path,
             bool recurse)
         {
-            return default;
+            throw new PSNotImplementedException();
         }
 
         ValueTask GetChildNamesAsync(
@@ -61,19 +60,19 @@ namespace PSAsyncProvider
             ReturnContainers returnContainers,
             CancellationToken cancellationToken)
         {
-            throw new PSNotSupportedException();
+            throw new PSNotImplementedException();
         }
 
         ValueTask<object> GetChildNamesDynamicParametersAsync(
             string path)
         {
-            return default;
+            throw new PSNotImplementedException();
         }
 
         ValueTask<bool> HasChildItemsAsync(
             string path)
         {
-            return default;
+            throw new PSNotImplementedException();
         }
 
         ValueTask NewItemAsync(
@@ -81,7 +80,7 @@ namespace PSAsyncProvider
             string itemTypeName,
             object newItemValue)
         {
-            throw new PSNotSupportedException();
+            throw new PSNotImplementedException();
         }
 
         ValueTask<object> NewItemDynamicParametersAsync(
@@ -89,7 +88,7 @@ namespace PSAsyncProvider
             string itemTypeName,
             object newItemValue)
         {
-            return default;
+            throw new PSNotImplementedException();
         }
 
         ValueTask RemoveItemAsync(
@@ -97,7 +96,7 @@ namespace PSAsyncProvider
             bool recurse,
             CancellationToken cancellationToken)
         {
-            throw new PSNotSupportedException();
+            throw new PSNotImplementedException();
         }
 
         ValueTask RemoveItemDynamicParametersAsync(
@@ -105,21 +104,21 @@ namespace PSAsyncProvider
             bool recurse,
             CancellationToken cancellationToken)
         {
-            return default;
+            throw new PSNotImplementedException();
         }
 
         ValueTask RenameItemAsync(
             string path,
             string newName)
         {
-            throw new PSNotSupportedException();
+            throw new PSNotImplementedException();
         }
 
         ValueTask<object> RenameItemDynamicParametersAsync(
             string path,
             string newName)
         {
-            return default;
+            throw new PSNotImplementedException();
         }
     }
 }

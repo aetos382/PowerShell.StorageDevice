@@ -8,17 +8,17 @@ namespace PSAsyncProvider
         ValueTask<ProviderInfo> StartAsync(
             ProviderInfo providerInfo)
         {
-            return new ValueTask<ProviderInfo>(providerInfo);
+            throw new PSNotImplementedException();
         }
 
         ValueTask<object> StartDynamicParametersAsync()
         {
-            return default;
+            throw new PSNotImplementedException();
         }
 
         ValueTask StopAsync()
         {
-            return default;
+            throw new PSNotImplementedException();
         }
     }
 }

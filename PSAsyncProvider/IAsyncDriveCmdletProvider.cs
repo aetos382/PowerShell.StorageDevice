@@ -7,26 +7,26 @@ namespace PSAsyncProvider
     public interface IAsyncDriveCmdletProvider :
         IAsyncCmdletProvider
     {
-        async IAsyncEnumerable<PSDriveInfo> InitializeDefaultDrivesAsync()
+        IAsyncEnumerable<PSDriveInfo> InitializeDefaultDrivesAsync()
         {
-            yield break;
+            throw new PSNotImplementedException();
         }
 
         ValueTask<PSDriveInfo> NewDriveAsync(
             PSDriveInfo drive)
         {
-            throw new PSNotSupportedException();
+            throw new PSNotImplementedException();
         }
 
         ValueTask<object?> NewDriveDynamicParametersAsync()
         {
-            return default;
+            throw new PSNotImplementedException();
         }
 
         ValueTask<PSDriveInfo> RemoveDriveAsync(
             PSDriveInfo drive)
         {
-            throw new PSNotSupportedException();
+            throw new PSNotImplementedException();
         }
     }
 }

@@ -10,13 +10,13 @@ namespace PSAsyncProvider
         ValueTask ClearItemAsync(
             string path)
         {
-            throw new PSNotSupportedException();
+            throw new PSNotImplementedException();
         }
 
         ValueTask<object?> ClearItemDynamicParametersAsync(
             string path)
         {
-            return default;
+            throw new PSNotImplementedException();
         }
 
         IAsyncEnumerable<string> ExpandPathAsync(
@@ -34,19 +34,19 @@ namespace PSAsyncProvider
         ValueTask<object> GetItemDynamicParametersAsync(
             string path)
         {
-            return default;
+            throw new PSNotImplementedException();
         }
 
         ValueTask InvokeDefaultActionAsync(
             string path)
         {
-            throw new PSNotSupportedException();
+            throw new PSNotImplementedException();
         }
 
         ValueTask<object> InvokeDefaultActionDynamicParametersAsync(
             string path)
         {
-            return default;
+            throw new PSNotImplementedException();
         }
 
         ValueTask<bool> IsValidPathAsync(
@@ -61,21 +61,21 @@ namespace PSAsyncProvider
         ValueTask<object> ItemExistsDynamicParametersAsync(
             string path)
         {
-            return default;
+            throw new PSNotImplementedException();
         }
 
         ValueTask SetItemAsync(
             string path,
             object value)
         {
-            throw new PSNotSupportedException();
+            throw new PSNotImplementedException();
         }
 
         ValueTask<object> SetItemDynamicParametersAsync(
             string path,
             object value)
         {
-            return default;
+            throw new PSNotImplementedException();
         }
     }
 }
