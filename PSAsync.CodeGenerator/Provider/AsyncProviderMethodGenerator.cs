@@ -142,7 +142,7 @@ namespace PSAsync.CodeGenerator.Provider
         public virtual void Initialize(
             GeneratorInitializationContext context)
         {
-            System.Diagnostics.Debugger.Launch();
+            // System.Diagnostics.Debugger.Launch();
             context.RegisterForSyntaxNotifications(() => new SyntaxReceiver());
         }
 

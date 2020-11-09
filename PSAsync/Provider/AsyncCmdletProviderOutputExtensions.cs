@@ -23,30 +23,8 @@ namespace PSAsync.Provider
             var context = AsyncMethodContext.GetContext(provider);
 
             var task = context.QueueAction(
-                provider,
                 (p, a, c) => p.WriteItemObject(a.item, a.path, a.isContainer),
                 (item, path, isContainer),
-                cancellationToken);
-
-            return task;
-        }
-
-        public static Task WriteVerboseAsync<TProvider>(
-            this TProvider provider,
-            string text,
-            CancellationToken cancellationToken = default)
-            where TProvider :
-                CmdletProvider,
-                IAsyncCmdletProvider
-        {
-            Requires.NotNull(provider, nameof(provider));
-
-            var context = AsyncMethodContext.GetContext(provider);
-
-            var task = context.QueueAction(
-                provider,
-                (p, a, c) => p.WriteVerbose(a),
-                text,
                 cancellationToken);
 
             return task;

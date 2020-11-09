@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Management.Automation;
@@ -100,12 +101,10 @@ namespace PSAsync
         }
 
         public AwaitableAction<TObject, TArgument, TResult> CreateAction<TArgument, TResult>(
-            TObject associatedObject,
             Func<TObject, TArgument, AsyncMethodContext<TObject>, TResult> action,
             TArgument argument,
             CancellationToken cancellationToken)
         {
-            Requires.NotNull(associatedObject, nameof(associatedObject));
             Requires.NotNull(action, nameof(action));
 
             this.CheckDisposed();
@@ -114,7 +113,7 @@ namespace PSAsync
                 CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, this._cts.Token);
 
             return new AwaitableAction<TObject, TArgument, TResult>(
-                associatedObject,
+                this._associatedObject,
                 (c, a) => action(c, a, this),
                 argument,
                 state => ((CancellationTokenSource?)state)!.Dispose(),
@@ -123,18 +122,15 @@ namespace PSAsync
         }
 
         public Task<TResult> QueueAction<TArgument, TResult>(
-            TObject associatedObject,
             Func<TObject, TArgument, AsyncMethodContext<TObject>, TResult> action,
             TArgument argument,
             CancellationToken cancellationToken)
         {
-            Requires.NotNull(associatedObject, nameof(associatedObject));
             Requires.NotNull(action, nameof(action));
 
             this.CheckDisposed();
 
             var awaitableAction = this.CreateAction(
-                associatedObject,
                 action,
                 argument,
                 cancellationToken);
@@ -171,18 +167,15 @@ namespace PSAsync
         }
 
         public Task QueueAction<TArgument>(
-            TObject associatedObject,
             Action<TObject, TArgument, AsyncMethodContext<TObject>> action,
             TArgument argument,
             CancellationToken cancellationToken)
         {
-            Requires.NotNull(associatedObject, nameof(associatedObject));
             Requires.NotNull(action, nameof(action));
 
             this.CheckDisposed();
 
             return this.QueueAction(
-                associatedObject,
                 (p, a, c) =>
                 {
                     action(p, a, c);
@@ -234,6 +227,15 @@ namespace PSAsync
             }
 
             this._queue.CompleteAdding();
+        }
+
+        internal ShouldContinueContext ShouldContinueContext
+        {
+            [DebuggerStepThrough]
+            get;
+
+            [DebuggerStepThrough]
+            set;
         }
 
         private bool IsMainThread

@@ -3,7 +3,8 @@ using System.Threading.Tasks;
 
 namespace PSAsync.Provider
 {
-    public interface IAsyncCmdletProvider
+    public interface IAsyncCmdletProvider :
+        ICmdletProviderOutput
     {
         Task<ProviderInfo> StartAsync(
             ProviderInfo providerInfo)
