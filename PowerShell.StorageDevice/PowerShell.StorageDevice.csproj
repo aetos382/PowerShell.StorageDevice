@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <AssemblyName>PowerShellStorageDevice</AssemblyName>
     <RootNamespace>PowerShellStorageDevice</RootNamespace>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>

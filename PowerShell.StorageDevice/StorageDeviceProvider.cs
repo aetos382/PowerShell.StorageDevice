@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Management.Automation;
 using System.Management.Automation.Provider;
 using System.Threading.Tasks;
+
+using Microsoft;
 
 using PSAsyncProvider;
 
@@ -31,20 +34,40 @@ namespace PowerShellStorageDevice
             return Task.FromResult(true);
         }
 
-        public Task<bool> ItemExistsAsync(
+        protected override ProviderInfo Start(
+            ProviderInfo providerInfo)
+        {
+            var result = AsyncMethodRunner.ExecuteAsyncMethod(
+                this,
+                (p, s, c) => p.StartAsync(s),
+                providerInfo);
+
+            return result;
+        }
+
+        public async Task<ProviderInfo> StartAsync(
+            ProviderInfo providerInfo)
+        {
+            await this.WriteVerboseAsync("StartAsync");
+
+            await Task.Yield();
+
+            await this.WriteVerboseAsync("StartAsync2");
+
+            return providerInfo;
+        }
+
+        public async Task<bool> ItemExistsAsync(
             string path)
         {
-            if (path is null)
-            {
-                throw new ArgumentNullException(nameof(path));
-            }
+            Requires.NotNull(path, nameof(path));
 
             if (path.Length == 0)
             {
-                return Task.FromResult(true);
+                return true;
             }
 
-            return Task.FromResult(false);
+            return false;
         }
 
         protected override bool ConvertPath(string path, string filter, ref string updatedPath, ref string updatedFilter)
