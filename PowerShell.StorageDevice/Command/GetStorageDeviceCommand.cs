@@ -7,7 +7,7 @@ using Windows.Devices.Enumeration;
 using PSAsync;
 using PSAsync.Command;
 
-namespace PowerShellStorageDevice
+namespace PowerShellStorageDevice.Command
 {
     [Cmdlet(VerbsCommon.Get, "StorageDevice")]
     [OutputType(typeof(DeviceInformation))]
