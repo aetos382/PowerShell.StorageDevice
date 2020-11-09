@@ -9,15 +9,12 @@ namespace PSAsyncProvider.CodeGenerator
         public TypeSymbols(
             Compilation compilation)
         {
-            this.Void = compilation.GetTypeByMetadataName(typeof(void).FullName);
             this.Object = compilation.GetTypeByMetadataName(typeof(object).FullName);
             this.String = compilation.GetTypeByMetadataName(typeof(string).FullName);
             this.Boolean = compilation.GetTypeByMetadataName(typeof(bool).FullName);
             this.ValueTask = compilation.GetTypeByMetadataName(typeof(ValueTask<>).FullName);
         }
 
-        public ITypeSymbol Void { get; }
-        
         public ITypeSymbol Object { get; }
 
         public ITypeSymbol String { get; }

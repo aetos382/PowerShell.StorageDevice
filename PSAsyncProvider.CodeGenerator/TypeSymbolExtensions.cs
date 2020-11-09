@@ -11,10 +11,8 @@ namespace PSAsyncProvider.CodeGenerator
             this ITypeSymbol type,
             ITypeSymbol testType,
             bool allowSubType,
-            IEqualityComparer<ISymbol?>? comparer)
+            IEqualityComparer<ISymbol?> comparer)
         {
-            comparer ??= SymbolEqualityComparer.Default;
-
             if (comparer.Equals(type, testType))
             {
                 return true;
@@ -43,10 +41,8 @@ namespace PSAsyncProvider.CodeGenerator
             this ITypeSymbol type,
             ITypeSymbol interfaceType,
             bool thisTypeOnly,
-            IEqualityComparer<ISymbol?>? comparer)
+            IEqualityComparer<ISymbol?> comparer)
         {
-            comparer ??= SymbolEqualityComparer.Default;
-
             var interfaces = thisTypeOnly ?
                 type.Interfaces :
                 type.AllInterfaces;
@@ -54,13 +50,11 @@ namespace PSAsyncProvider.CodeGenerator
             return interfaces.Any(x => comparer.Equals(x, interfaceType));
         }
 
-        public static ISymbol? GetOverrideSymbol(
+        public static IMethodSymbol? GetOverrideSymbol(
             this ITypeSymbol type,
             IMethodSymbol baseSymbol,
-            IEqualityComparer<ISymbol?>? comparer)
+            IEqualityComparer<ISymbol?> comparer)
         {
-            comparer ??= SymbolEqualityComparer.Default;
-
             var methods = type.GetMembers(baseSymbol.Name).OfType<IMethodSymbol>();
 
             foreach (var method in methods)
@@ -82,12 +76,10 @@ namespace PSAsyncProvider.CodeGenerator
         public static IMethodSymbol? GetMethodSymbol(
             this ITypeSymbol type,
             string name,
-            IReadOnlyList<ITypeSymbol>? parameterTypes,
+            IEnumerable<ITypeSymbol>? parameterTypes,
             ITypeSymbol returnType,
-            IEqualityComparer<ISymbol?>? comparer)
+            IEqualityComparer<ISymbol?> comparer)
         {
-            comparer ??= SymbolEqualityComparer.Default;
-
             var methods = type.GetMembers(name).OfType<IMethodSymbol>();
 
             foreach (var method in methods)

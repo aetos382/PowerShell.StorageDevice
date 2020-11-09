@@ -7,33 +7,33 @@ namespace PSAsyncProvider
     public interface IAsyncNavigationCmdletProvider :
         IAsyncContainerCmdletProvider
     {
-        public virtual ValueTask<string> GetChildNameAsync(
+        ValueTask<string> GetChildNameAsync(
             string path)
         {
             throw new PSNotImplementedException();
         }
 
-        public virtual ValueTask<string> GetParentPathAsync(
+        ValueTask<string> GetParentPathAsync(
             string path,
             string root)
         {
             throw new PSNotImplementedException();
         }
 
-        public virtual ValueTask<bool> IsItemContainerAsync(
+        ValueTask<bool> IsItemContainerAsync(
             string path)
         {
             throw new PSNotImplementedException();
         }
 
-        public virtual ValueTask<string> MakePathAsync(
+        ValueTask<string> MakePathAsync(
             string parent,
             string child)
         {
             throw new PSNotSupportedException();
         }
 
-        public virtual ValueTask<string> MakePathAsync(
+        ValueTask<string> MakePathAsync(
             string parent,
             string child,
             bool childIsLeaf)
@@ -41,7 +41,7 @@ namespace PSAsyncProvider
             throw new PSNotSupportedException();
         }
 
-        public virtual ValueTask MoveItemAsync(
+        ValueTask MoveItemAsync(
             string path,
             string destination,
             CancellationToken cancellationToken)
@@ -49,7 +49,7 @@ namespace PSAsyncProvider
             throw new PSNotSupportedException();
         }
 
-        public virtual ValueTask<object> MoveItemDynamicParametersAsync(
+        ValueTask<object> MoveItemDynamicParametersAsync(
             string path,
             string destination,
             CancellationToken cancellationToken)
@@ -57,7 +57,7 @@ namespace PSAsyncProvider
             return default;
         }
 
-        public virtual ValueTask<string> NormalizeRelativePathAsync(
+        ValueTask<string> NormalizeRelativePathAsync(
             string path,
             string basePath)
         {

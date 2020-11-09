@@ -48,13 +48,15 @@ namespace PSAsyncProvider
                     (CSharpParseOptions)context.ParseOptions,
                     cancellationToken: context.CancellationToken));
 
+            var ctx = new CodeGenerationContext(compilation);
+
             var generators = new IAsyncProviderMethodGenerator[]
             {
-                new AsyncCmdletProviderMethodGenerator(context, compilation),
-                new AsyncDriveCmdletMethodGenerator(context, compilation),
-                new AsyncItemCmdletMethodGenerator(context, compilation),
-                new AsyncContainerCmdletProviderMethodGenerator(context, compilation),
-                new AsyncNavigationCmdletProviderMethodGenerator(context, compilation)
+                new AsyncCmdletProviderMethodGenerator(ctx),
+                new AsyncDriveCmdletMethodGenerator(ctx),
+                new AsyncItemCmdletMethodGenerator(ctx),
+                new AsyncContainerCmdletProviderMethodGenerator(ctx),
+                new AsyncNavigationCmdletProviderMethodGenerator(ctx)
             };
 
             foreach (var syntax in receiver.CandidateSyntaxes)

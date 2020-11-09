@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 
 using Microsoft.CodeAnalysis;
@@ -9,13 +10,26 @@ namespace PSAsyncProvider.CodeGenerator
         IAsyncProviderMethodGenerator
     {
         public AsyncNavigationCmdletProviderMethodGenerator(
-            GeneratorExecutionContext context,
-            Compilation compilation)
+            CodeGenerationContext context)
         {
-            this._helper = new AsyncCmdletProviderMethodGenerationHelper(
-                compilation,
+            var helper = new AsyncCmdletProviderMethodGenerationHelper(
+                context,
                 "System.Management.Automation.Provider.NavigationCmdletProvider",
                 "PSAsyncProvider.IAsyncNavigationCmdletProvider");
+
+            this._helper = helper;
+            
+            var typeSymbols = context.TypeSymbols;
+
+            this._isItemContainer = helper.CreateMethodDelegation(
+                "IsItemContainer",
+                new[] { typeSymbols.String },
+                typeSymbols.Boolean);
+
+            this._normalizeRelativePath = helper.CreateMethodDelegation(
+                "NormalizeRelativePath",
+                new[] { typeSymbols.String, typeSymbols.String },
+                typeSymbols.String);
         }
 
         public bool IsTargetType(
@@ -25,12 +39,71 @@ namespace PSAsyncProvider.CodeGenerator
         }
 
         public IEnumerable<string> GenerateCode(
-            ITypeSymbol symbol,
+            ITypeSymbol concreteProviderType,
             CancellationToken cancellationToken)
         {
-            yield break;
+            if (concreteProviderType is null)
+            {
+                throw new ArgumentNullException(nameof(concreteProviderType));
+            }
+
+            string? code;
+
+            code = this.GenerateIsItemContainer(concreteProviderType);
+            if (!string.IsNullOrWhiteSpace(code))
+            {
+                yield return code;
+            }
+
+            code = this.GenerateNormalizeRelativePath(concreteProviderType);
+            if (!string.IsNullOrWhiteSpace(code))
+            {
+                yield return code;
+            }
+        }
+
+        private string? GenerateIsItemContainer(
+            ITypeSymbol concreteProviderType)
+        {
+            if (!this._isItemContainer.ShouldGenerateMethod(concreteProviderType))
+            {
+                return null;
+            }
+
+            return @"
+// Generated Method
+protected override bool IsItemContainer(string path)
+{
+    this.WriteVerbose($""IsItemContainer(\""{path}\"");"");
+    var result = this.IsItemContainerAsync(path).Result;
+    this.WriteVerbose($""returns: {result}"");
+    return result;
+}";
+        }
+
+        private string? GenerateNormalizeRelativePath(
+            ITypeSymbol concreteProviderType)
+        {
+            if (!this._normalizeRelativePath.ShouldGenerateMethod(concreteProviderType))
+            {
+                return null;
+            }
+
+            return @"
+// Generated Method
+protected override bool NormalizeRelativePath(string path, string basePath)
+{
+    this.WriteVerbose($""NormalizeRelativePath(\""{path}\"", \""{basePath}\"");"");
+    var result = this.NormalizeRelativePathAsync(path, basePath).Result;
+    this.WriteVerbose($""returns: {result}"");
+    return result;
+}";
         }
 
         private readonly AsyncCmdletProviderMethodGenerationHelper _helper;
+
+        private readonly MethodDelegation _isItemContainer;
+
+        private readonly MethodDelegation _normalizeRelativePath;
     }
 }

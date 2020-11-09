@@ -10,73 +10,54 @@ namespace PSAsyncProvider.CodeGenerator
         IAsyncProviderMethodGenerator
     {
         public AsyncCmdletProviderMethodGenerator(
-            GeneratorExecutionContext context,
-            Compilation compilation)
+            CodeGenerationContext context)
         {
-            this._helper = new AsyncCmdletProviderMethodGenerationHelper(
-                compilation,
+            var helper = new AsyncCmdletProviderMethodGenerationHelper(
+                context,
                 "System.Management.Automation.Provider.CmdletProvider",
-                "PSAsyncProvider.IAsyncCmdletProvider",
-                _comparer);
+                "PSAsyncProvider.IAsyncCmdletProvider");
 
-            var providerSymbol = this._helper.ProviderSymbol;
-            var interfaceSymbol = this._helper.InterfaceSymbol;
+            var typeSymbols = context.TypeSymbols;
 
-            var providerInfoSymbol = compilation.GetTypeByMetadataName(
+            var providerInfoSymbol = context.Compilation.GetTypeByMetadataName(
                 "System.Management.Automation.ProviderInfo");
-
-            var typeSymbols = new TypeSymbols(compilation);
 
             if (providerInfoSymbol is null)
             {
                 throw new InvalidOperationException();
             }
             
-            this._interfaceType = interfaceSymbol;
+            this._helper = helper;
 
-            this._start = providerSymbol.GetMethodSymbol(
+            this._start = helper.CreateMethodDelegation(
                 "Start",
                 new[] { providerInfoSymbol },
-                providerInfoSymbol,
-                null);
+                providerInfoSymbol);
             
-            this._startDynamicParameters = providerSymbol.GetMethodSymbol(
+            this._startDynamicParameters = helper.CreateMethodDelegation(
                 "StartDynamicParameters",
                 null,
-                typeSymbols.Object,
-                null);
-
-            this._startAsync = interfaceSymbol.GetMethodSymbol(
-                "StartAsync",
-                new[] { providerInfoSymbol },
-                typeSymbols.ValueTask.Construct(providerInfoSymbol),
-                null);
-
-            this._startDynamicParametersAsync = interfaceSymbol.GetMethodSymbol(
-                "StartDynamicParametersAsync",
-                null,
-                typeSymbols.ValueTask.Construct(typeSymbols.Object),
-                null);
+                typeSymbols.Object);
         }
 
         public bool IsTargetType(
-            ITypeSymbol symbol)
+            ITypeSymbol concreteProviderType)
         {
-            return this._helper.IsTargetType(symbol);
+            return this._helper.IsTargetType(concreteProviderType);
         }
 
         public IEnumerable<string> GenerateCode(
-            ITypeSymbol symbol,
+            ITypeSymbol concreteProviderType,
             CancellationToken cancellationToken)
         {
             string code;
 
-            code = this.GenerateStart(symbol, cancellationToken);
+            code = this.GenerateStart(concreteProviderType, cancellationToken);
             if (!string.IsNullOrWhiteSpace(code))
             {
                 yield return code;
 
-                code = this.GenerateStartDynamicParmaeters(symbol, cancellationToken);
+                code = this.GenerateStartDynamicParmaeters(concreteProviderType, cancellationToken);
                 if (!string.IsNullOrWhiteSpace(code))
                 {
                     yield return code;
@@ -87,77 +68,51 @@ namespace PSAsyncProvider.CodeGenerator
         }
 
         private string? GenerateStart(
-            ITypeSymbol symbol,
+            ITypeSymbol concreteProviderType,
             CancellationToken cancellationToken)
         {
-            var start = symbol.GetOverrideSymbol(
-                this._start,
-                _comparer);
-
-            if (start is not null)
-            {
-                return null;
-            }
-
-            var startAsync = symbol.FindImplementationForInterfaceMember(
-                this._startAsync);
-
-            if (startAsync is null ||
-                _comparer.Equals(startAsync.ContainingType, this._interfaceType))
+            if (!this._start.ShouldGenerateMethod(concreteProviderType))
             {
                 return null;
             }
 
             return @"
+// Generated Method
 protected override System.Management.Automation.ProviderInfo Start(System.Management.Automation.ProviderInfo providerInfo)
 {
-    return this.StartAsync(providerInfo).Result;
+    this.WriteVerbose($""IsItemContainer(\""{path}\"");"");
+    var result = this.StartAsync(providerInfo).Result;
+    this.WriteVerbose($""returns: {result}"");
+    return result;
 }
 ";
         }
 
         private string? GenerateStartDynamicParmaeters(
-            ITypeSymbol symbol,
+            ITypeSymbol concreteProviderType,
             CancellationToken cancellationToken)
         {
-            var startDynamicParameters = symbol.GetOverrideSymbol(
-                this._startDynamicParameters,
-                _comparer);
-
-            if (startDynamicParameters is not null)
-            {
-                return null;
-            }
-
-            var startDynamicParametersAsync = symbol.FindImplementationForInterfaceMember(
-                this._startDynamicParametersAsync);
-
-            if (startDynamicParametersAsync is null ||
-                _comparer.Equals(startDynamicParametersAsync.ContainingType, this._interfaceType))
+            if (!this._startDynamicParameters.ShouldGenerateMethod(concreteProviderType))
             {
                 return null;
             }
 
             return @"
+// Generated Method
 protected override object StartDynamicParameters()
 {
-    return this.StartDynamicParametersAsync().Result;
+    this.WriteVerbose($""IsItemContainer(\""{path}\"");"");
+    var result = this.StartDynamicParametersAsync().Result;
+    this.WriteVerbose($""returns: {result}"");
+    return result;
 }
 ";
             }
 
-        private static readonly SymbolEqualityComparer _comparer = SymbolEqualityComparer.Default;
-
         private readonly AsyncCmdletProviderMethodGenerationHelper _helper;
 
-        private readonly ITypeSymbol _interfaceType;
+        private readonly MethodDelegation _start;
 
-        private readonly IMethodSymbol _start;
-
-        private readonly IMethodSymbol _startDynamicParameters;
-
-        private readonly IMethodSymbol _startAsync;
-
-        private readonly IMethodSymbol _startDynamicParametersAsync;
+        private readonly MethodDelegation _startDynamicParameters;
     }
 }

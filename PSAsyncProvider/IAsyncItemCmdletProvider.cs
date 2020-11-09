@@ -7,71 +7,71 @@ namespace PSAsyncProvider
     public interface IAsyncItemCmdletProvider :
         IAsyncDriveCmdletProvider
     {
-        public virtual ValueTask ClearItemAsync(
+        ValueTask ClearItemAsync(
             string path)
         {
             throw new PSNotSupportedException();
         }
 
-        public virtual ValueTask<object?> ClearItemDynamicParametersAsync(
+        ValueTask<object?> ClearItemDynamicParametersAsync(
             string path)
         {
             return default;
         }
 
-        public virtual IAsyncEnumerable<string> ExpandPathAsync(
+        IAsyncEnumerable<string> ExpandPathAsync(
             string path)
         {
             throw new PSNotImplementedException();
         }
 
-        public virtual ValueTask GetItemAsync(
+        ValueTask GetItemAsync(
             string path)
         {
             throw new PSNotImplementedException();
         }
 
-        public virtual ValueTask<object> GetItemDynamicParametersAsync(
+        ValueTask<object> GetItemDynamicParametersAsync(
             string path)
         {
             return default;
         }
 
-        public virtual ValueTask InvokeDefaultActionAsync(
+        ValueTask InvokeDefaultActionAsync(
             string path)
         {
             throw new PSNotSupportedException();
         }
 
-        public virtual ValueTask<object> InvokeDefaultActionDynamicParametersAsync(
+        ValueTask<object> InvokeDefaultActionDynamicParametersAsync(
             string path)
         {
             return default;
         }
 
-        public abstract ValueTask<bool> IsValidPathAsync(
+        ValueTask<bool> IsValidPathAsync(
             string path);
 
-        public virtual ValueTask<bool> ItemExistsAsync(
+        ValueTask<bool> ItemExistsAsync(
             string path)
         {
             throw new PSNotImplementedException();
         }
 
-        public virtual ValueTask<object> ItemExistsDynamicParametersAsync(
+        ValueTask<object> ItemExistsDynamicParametersAsync(
             string path)
         {
             return default;
         }
 
-        public virtual ValueTask SetItemAsync(
+        ValueTask SetItemAsync(
             string path,
             object value)
         {
             throw new PSNotSupportedException();
         }
 
-        public virtual ValueTask<object> SetItemDynamicParametersAsync(
+        ValueTask<object> SetItemDynamicParametersAsync(
             string path,
             object value)
         {

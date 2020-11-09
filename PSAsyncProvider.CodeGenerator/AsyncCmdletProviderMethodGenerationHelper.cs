@@ -7,25 +7,26 @@ namespace PSAsyncProvider.CodeGenerator
     internal class AsyncCmdletProviderMethodGenerationHelper
     {
         public AsyncCmdletProviderMethodGenerationHelper(
-            Compilation compilation,
+            CodeGenerationContext context,
             string providerTypeName,
-            string interfaceName,
-            IEqualityComparer<ISymbol?>? symbolComparer = null)
+            string interfaceName)
         {
+            var compilation = context.Compilation;
+
             var attributeSymbol = compilation.GetTypeByMetadataName("PSAsyncProvider.GenerateMemberAttribute");
             var providerSymbol = compilation.GetTypeByMetadataName(providerTypeName);
             var interfaceSymbol = compilation.GetTypeByMetadataName(interfaceName);
 
+            this.Context = context;
             this._attributeSymbol = attributeSymbol;
             this.ProviderSymbol = providerSymbol;
             this.InterfaceSymbol = interfaceSymbol;
-            this._symbolComparer = symbolComparer ?? SymbolEqualityComparer.Default;
         }
 
         public bool IsTargetType(
             ITypeSymbol symbol)
         {
-            var comparer = this._symbolComparer;
+            var comparer = this.Context.SymbolComparer;
 
             if (!symbol.HasAttribute(this._attributeSymbol, true, false, comparer))
             {
@@ -45,12 +46,24 @@ namespace PSAsyncProvider.CodeGenerator
             return true;
         }
 
+        public MethodDelegation CreateMethodDelegation(
+            string methodName,
+            IEnumerable<ITypeSymbol>? parameterTypes,
+            ITypeSymbol returnType)
+        {
+            return new MethodDelegation(
+                this,
+                methodName,
+                parameterTypes,
+                returnType);
+        }
+
+        public CodeGenerationContext Context { get; }
+
         private readonly ITypeSymbol _attributeSymbol;
 
         public ITypeSymbol ProviderSymbol { get; }
 
         public ITypeSymbol InterfaceSymbol { get; }
-
-        private readonly IEqualityComparer<ISymbol?> _symbolComparer;
     }
 }

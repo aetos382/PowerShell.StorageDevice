@@ -9,23 +9,22 @@ namespace PSAsyncProvider.CodeGenerator
         IAsyncProviderMethodGenerator
     {
         public AsyncDriveCmdletMethodGenerator(
-            GeneratorExecutionContext context,
-            Compilation compilation)
+            CodeGenerationContext context)
         {
             this._helper = new AsyncCmdletProviderMethodGenerationHelper(
-                compilation,
+                context,
                 "System.Management.Automation.Provider.DriveCmdletProvider",
                 "PSAsyncProvider.IAsyncDriveCmdletProvider");
         }
 
         public bool IsTargetType(
-            ITypeSymbol symbol)
+            ITypeSymbol concreteProviderType)
         {
-            return this._helper.IsTargetType(symbol);
+            return this._helper.IsTargetType(concreteProviderType);
         }
 
         public IEnumerable<string> GenerateCode(
-            ITypeSymbol symbol,
+            ITypeSymbol concreteProviderType,
             CancellationToken cancellationToken)
         {
             yield break;

@@ -7,7 +7,7 @@ namespace PSAsyncProvider
     public interface IAsyncContainerCmdletProvider :
         IAsyncItemCmdletProvider
     {
-        public virtual ValueTask<PathConversionResult> ConvertPathAsync(
+        ValueTask<PathConversionResult> ConvertPathAsync(
             string path,
             string filter)
         {
@@ -15,7 +15,7 @@ namespace PSAsyncProvider
                 PathConversionResult.NotAltered(path, filter));
         }
 
-        public virtual ValueTask CopyItemAsync(
+        ValueTask CopyItemAsync(
             string path,
             string copyPath,
             bool recurse,
@@ -24,7 +24,7 @@ namespace PSAsyncProvider
             throw new PSNotSupportedException();
         }
 
-        public virtual ValueTask<object?> CopyItemDynamicParametersAsync(
+        ValueTask<object?> CopyItemDynamicParametersAsync(
             string path,
             string copyPath,
             bool recurse)
@@ -32,7 +32,7 @@ namespace PSAsyncProvider
             return default;
         }
 
-        public virtual ValueTask GetChildItemsAsync(
+        ValueTask GetChildItemsAsync(
             string path,
             bool recurse,
             CancellationToken cancellationToken)
@@ -40,7 +40,7 @@ namespace PSAsyncProvider
             throw new PSNotSupportedException();
         }
 
-        public virtual ValueTask GetChildItemsAsync(
+        ValueTask GetChildItemsAsync(
             string path,
             bool recurse,
             uint depth,
@@ -49,14 +49,14 @@ namespace PSAsyncProvider
             throw new PSNotSupportedException();
         }
 
-        public virtual ValueTask<object> GetChildItemsDynamicParametersAsync(
+        ValueTask<object> GetChildItemsDynamicParametersAsync(
             string path,
             bool recurse)
         {
             return default;
         }
 
-        public virtual ValueTask GetChildNamesAsync(
+        ValueTask GetChildNamesAsync(
             string path,
             ReturnContainers returnContainers,
             CancellationToken cancellationToken)
@@ -64,19 +64,19 @@ namespace PSAsyncProvider
             throw new PSNotSupportedException();
         }
 
-        public virtual ValueTask<object> GetChildNamesDynamicParametersAsync(
+        ValueTask<object> GetChildNamesDynamicParametersAsync(
             string path)
         {
             return default;
         }
 
-        public virtual ValueTask<bool> HasChildItemsAsync(
+        ValueTask<bool> HasChildItemsAsync(
             string path)
         {
             return default;
         }
 
-        public virtual ValueTask NewItemAsync(
+        ValueTask NewItemAsync(
             string path,
             string itemTypeName,
             object newItemValue)
@@ -84,7 +84,7 @@ namespace PSAsyncProvider
             throw new PSNotSupportedException();
         }
 
-        public virtual ValueTask<object> NewItemDynamicParametersAsync(
+        ValueTask<object> NewItemDynamicParametersAsync(
             string path,
             string itemTypeName,
             object newItemValue)
@@ -92,7 +92,7 @@ namespace PSAsyncProvider
             return default;
         }
 
-        public virtual ValueTask RemoveItemAsync(
+        ValueTask RemoveItemAsync(
             string path,
             bool recurse,
             CancellationToken cancellationToken)
@@ -100,7 +100,7 @@ namespace PSAsyncProvider
             throw new PSNotSupportedException();
         }
 
-        public virtual ValueTask RemoveItemDynamicParametersAsync(
+        ValueTask RemoveItemDynamicParametersAsync(
             string path,
             bool recurse,
             CancellationToken cancellationToken)
@@ -108,14 +108,14 @@ namespace PSAsyncProvider
             return default;
         }
 
-        public virtual ValueTask RenameItemAsync(
+        ValueTask RenameItemAsync(
             string path,
             string newName)
         {
             throw new PSNotSupportedException();
         }
 
-        public virtual ValueTask<object> RenameItemDynamicParametersAsync(
+        ValueTask<object> RenameItemDynamicParametersAsync(
             string path,
             string newName)
         {
