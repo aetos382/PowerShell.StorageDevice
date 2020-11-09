@@ -10,14 +10,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0-5.final" />
-	  <PackageReference Include="Microsoft.VisualStudio.Validation" Version="16.8.33">
+	  <PackageReference Include="Microsoft.VisualStudio.Validation">
       <GeneratePathProperty>true</GeneratePathProperty>
       <PrivateAssets>all</PrivateAssets>
 	  </PackageReference>
-	  <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.1">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+	  <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" />
   </ItemGroup>
 
   <PropertyGroup>

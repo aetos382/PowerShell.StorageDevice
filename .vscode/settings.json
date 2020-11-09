@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "*.xml": "xml",
+        "*.*proj": "xml",
+        "*.config": "xml",
+        "*.targets": "xml",
+        "*.props": "xml",
+        "*.resx": "xml"
+    }
+}
