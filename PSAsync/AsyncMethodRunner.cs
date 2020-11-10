@@ -38,7 +38,7 @@ namespace PSAsync
             try
             {
                 task.ContinueWith(
-                    (t, state) => ((AsyncMethodContext<TObject>)state)!.Close(),
+                    (t, state) => ((AsyncMethodContext)state)!.Close(),
                     context,
                     CancellationToken.None,
                     TaskContinuationOptions.ExecuteSynchronously,

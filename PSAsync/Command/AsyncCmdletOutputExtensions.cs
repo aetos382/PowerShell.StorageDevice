@@ -25,7 +25,7 @@ namespace PSAsync
             var context = AsyncMethodContext.GetContext(cmdlet);
 
             var task = context.QueueAction(
-                (c, a, _) => c.WriteObject(a),
+                (c, a, _) => ((Cmdlet)c).WriteObject(a),
                 sendToPipeline,
                 cancellationToken);
 
@@ -48,7 +48,7 @@ namespace PSAsync
             var context = AsyncMethodContext.GetContext(cmdlet);
 
             var task = context.QueueAction(
-                (c, a, _) => c.WriteObject(a.sendToPipeline, a.enumerateCollection),
+                (c, a, _) => ((Cmdlet)c).WriteObject(a.sendToPipeline, a.enumerateCollection),
                 (sendToPipeline, enumerateCollection),
                 cancellationToken);
 
@@ -73,7 +73,7 @@ namespace PSAsync
             var context = AsyncMethodContext.GetContext(cmdlet);
 
             var task = context.QueueAction(
-                (o, a, x) => {
+                (c, a, x) => {
 
                     bool yesToAll = false;
                     bool noToAll = false;
@@ -84,7 +84,7 @@ namespace PSAsync
                     }
 
                     bool result =
-                        o.ShouldContinue(
+                        ((Cmdlet)c).ShouldContinue(
                             a.query,
                             a.caption,
                             a.hasSecurityImpact,

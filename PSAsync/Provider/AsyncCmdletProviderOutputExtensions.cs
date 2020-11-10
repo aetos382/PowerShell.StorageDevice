@@ -24,7 +24,7 @@ namespace PSAsync.Provider
             var context = AsyncMethodContext.GetContext(provider);
 
             var task = context.QueueAction(
-                (p, a, _) => p.WriteItemObject(a.item, a.path, a.isContainer),
+                (p, a, _) => ((CmdletProvider)p).WriteItemObject(a.item, a.path, a.isContainer),
                 (item, path, isContainer),
                 cancellationToken);
 
@@ -45,7 +45,7 @@ namespace PSAsync.Provider
             var context = AsyncMethodContext.GetContext(provider);
 
             var task = context.QueueAction(
-                (p, a, _) => p.WritePropertyObject(a.propertyValue, a.path),
+                (p, a, _) => ((CmdletProvider)p).WritePropertyObject(a.propertyValue, a.path),
                 (propertyValue, path),
                 cancellationToken);
 
@@ -66,7 +66,7 @@ namespace PSAsync.Provider
             var context = AsyncMethodContext.GetContext(provider);
 
             var task = context.QueueAction(
-                (p, a, _) => p.WriteSecurityDescriptorObject(a.securityDescriptor, a.path),
+                (p, a, _) => ((CmdletProvider)p).WriteSecurityDescriptorObject(a.securityDescriptor, a.path),
                 (securityDescriptor, path),
                 cancellationToken);
 

@@ -23,7 +23,7 @@ namespace PSAsync
             var context = AsyncMethodContext.GetContext(associatedObject);
 
             var task = context.QueueAction(
-                (o, a, _) => o.WriteError(a),
+                (o, a, _) => ((ICmdlet)o).WriteError(a),
                 error,
                 cancellationToken);
 
@@ -45,7 +45,7 @@ namespace PSAsync
             var context = AsyncMethodContext.GetContext(associatedObject);
 
             var task = context.QueueAction(
-                (o, a, _) => o.WriteWarning(a),
+                (o, a, _) => ((ICmdlet)o).WriteWarning(a),
                 message,
                 cancellationToken);
 
@@ -65,7 +65,7 @@ namespace PSAsync
             var context = AsyncMethodContext.GetContext(associatedObject);
 
             var task = context.QueueAction(
-                (o, a, _) => o.WriteVerbose(a),
+                (o, a, _) => ((ICmdlet)o).WriteVerbose(a),
                 message,
                 cancellationToken);
 
@@ -87,7 +87,7 @@ namespace PSAsync
             var context = AsyncMethodContext.GetContext(associatedObject);
 
             var task = context.QueueAction(
-                (o, a, _) => o.WriteInformation(a),
+                (o, a, _) => ((ICmdlet)o).WriteInformation(a),
                 information,
                 cancellationToken);
 
@@ -110,7 +110,7 @@ namespace PSAsync
             var context = AsyncMethodContext.GetContext(associatedObject);
 
             var task = context.QueueAction(
-                (o, a, _) => o.WriteInformation(a.messageData, a.tags),
+                (o, a, _) => ((ICmdlet)o).WriteInformation(a.messageData, a.tags),
                 (messageData, tags),
                 cancellationToken);
 
@@ -132,7 +132,7 @@ namespace PSAsync
             var context = AsyncMethodContext.GetContext(associatedObject);
 
             var task = context.QueueAction(
-                (o, a, _) => o.WriteProgress(a),
+                (o, a, _) => ((ICmdlet)o).WriteProgress(a),
                 progress,
                 cancellationToken);
 
@@ -154,7 +154,7 @@ namespace PSAsync
             var context = AsyncMethodContext.GetContext(associatedObject);
 
             var task = context.QueueAction(
-                (o, a, _) => o.ShouldProcess(a),
+                (o, a, _) => ((ICmdlet)o).ShouldProcess(a),
                 target,
                 cancellationToken);
 
@@ -177,7 +177,7 @@ namespace PSAsync
             var context = AsyncMethodContext.GetContext(associatedObject);
 
             var task = context.QueueAction(
-                (o, a, _) => o.ShouldProcess(a.target, a.action),
+                (o, a, _) => ((ICmdlet)o).ShouldProcess(a.target, a.action),
                 (target, action),
                 cancellationToken);
 
@@ -202,7 +202,7 @@ namespace PSAsync
 
             var task = context.QueueAction(
                 (o, a, _) => {
-                    bool result = o.ShouldProcess(a.verboseDescription, a.verboseWarning, a.caption, out var reason);
+                    bool result = ((ICmdlet)o).ShouldProcess(a.verboseDescription, a.verboseWarning, a.caption, out var reason);
                     return new ShouldProcessResult(result, reason);
                 },
                 (verboseDescription, verboseWarning, caption),
@@ -239,7 +239,7 @@ namespace PSAsync
                     }
 
                     bool result =
-                        o.ShouldContinue(
+                        ((ICmdlet)o).ShouldContinue(
                             a.query,
                             a.caption,
                             ref yesToAll,

@@ -12,39 +12,12 @@ using Microsoft;
 
 namespace PSAsync
 {
-    internal static class AsyncMethodContext
-    {
-        public static AsyncMethodContext<TObject> Start<TObject>(
-            TObject associatedObject)
-            where TObject : class
-        {
-            Requires.NotNull(associatedObject, nameof(associatedObject));
-
-            return AsyncMethodContext<TObject>.Start(associatedObject);
-        }
-
-        public static AsyncMethodContext<TObject> GetContext<TObject>(
-            TObject associatedObject)
-            where TObject : class
-        {
-            Requires.NotNull(associatedObject, nameof(associatedObject));
-
-            return AsyncMethodContext<TObject>.GetContext(associatedObject);
-        }
-    }
-
-    internal sealed class AsyncMethodContext<TObject> :
+    internal sealed class AsyncMethodContext :
         IDisposable
-        where TObject : class
     {
-        private AsyncMethodContext(
-            TObject associatedObject)
+        public AsyncMethodContext(
+            object associatedObject)
         {
-            if (!_contexts.TryAdd(associatedObject, this))
-            {
-                throw new InvalidOperationException();
-            }
-
             this._associatedObject = associatedObject;
 
             this._mainThreadId = Thread.CurrentThread.ManagedThreadId;
@@ -54,17 +27,20 @@ namespace PSAsync
             this._cts = new CancellationTokenSource();
         }
 
-        public static AsyncMethodContext<TObject> Start(
-            TObject associatedObject)
+        public static AsyncMethodContext Start(
+            object associatedObject)
         {
             Requires.NotNull(associatedObject, nameof(associatedObject));
 
-            var context = new AsyncMethodContext<TObject>(associatedObject);
+            var context = _contexts.GetOrAdd(
+                associatedObject,
+                x => new AsyncMethodContext(x));
+
             return context;
         }
 
-        public static AsyncMethodContext<TObject> GetContext(
-            TObject associatedObject)
+        public static AsyncMethodContext GetContext(
+            object associatedObject)
         {
             Requires.NotNull(associatedObject, nameof(associatedObject));
 
@@ -77,10 +53,10 @@ namespace PSAsync
         }
 
         public static bool TryGetContext(
-            TObject associatedObject,
+            object associatedObject,
 
             [MaybeNullWhen(false)]
-            out AsyncMethodContext<TObject> context)
+            out AsyncMethodContext context)
         {
             Requires.NotNull(associatedObject, nameof(associatedObject));
 
@@ -100,8 +76,8 @@ namespace PSAsync
             return true;
         }
 
-        public AwaitableAction<TObject, TArgument, TResult> CreateAction<TArgument, TResult>(
-            Func<TObject, TArgument, AsyncMethodContext<TObject>, TResult> action,
+        public AwaitableAction<object, TArgument, TResult> CreateAction<TArgument, TResult>(
+            Func<object, TArgument, AsyncMethodContext, TResult> action,
             TArgument argument,
             CancellationToken cancellationToken)
         {
@@ -112,7 +88,7 @@ namespace PSAsync
             var linkedTokenSource =
                 CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, this._cts.Token);
 
-            return new AwaitableAction<TObject, TArgument, TResult>(
+            return new AwaitableAction<object, TArgument, TResult>(
                 this._associatedObject,
                 (c, a) => action(c, a, this),
                 argument,
@@ -122,7 +98,7 @@ namespace PSAsync
         }
 
         public Task<TResult> QueueAction<TArgument, TResult>(
-            Func<TObject, TArgument, AsyncMethodContext<TObject>, TResult> action,
+            Func<object, TArgument, AsyncMethodContext, TResult> action,
             TArgument argument,
             CancellationToken cancellationToken)
         {
@@ -136,7 +112,8 @@ namespace PSAsync
                 cancellationToken);
 
             awaitableAction.Task.ContinueWith(
-                t => {
+                t =>
+                {
                     bool pipelineStopped = t.Exception!
                         .Flatten()
                         .InnerExceptions
@@ -167,7 +144,7 @@ namespace PSAsync
         }
 
         public Task QueueAction<TArgument>(
-            Action<TObject, TArgument, AsyncMethodContext<TObject>> action,
+            Action<object, TArgument, AsyncMethodContext> action,
             TArgument argument,
             CancellationToken cancellationToken)
         {
@@ -253,11 +230,11 @@ namespace PSAsync
                 throw new ObjectDisposedException(nameof(AsyncMethodContext));
             }
         }
+        
+        private static readonly ConcurrentDictionary<object, AsyncMethodContext> _contexts =
+            new ConcurrentDictionary<object, AsyncMethodContext>();
 
-        private static readonly Dictionary<TObject, AsyncMethodContext<TObject>> _contexts =
-            new Dictionary<TObject, AsyncMethodContext<TObject>>();
-
-        private readonly TObject _associatedObject;
+        private readonly object _associatedObject;
 
         private readonly int _mainThreadId;
 
