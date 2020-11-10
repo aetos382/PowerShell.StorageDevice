@@ -11,7 +11,7 @@ namespace PSAsync.Provider
     public static class AsyncCmdletProviderInvocationExtensions
     {
         [return: MaybeNull]
-        public static TResult ExecuteAsyncAction<TProvider, TArgument, TResult>(
+        public static TResult ExecuteAsyncMethod<TProvider, TArgument, TResult>(
             this TProvider provider,
             Func<TProvider, TArgument, CancellationToken, Task<TResult>> action,
             TArgument argument)
@@ -31,7 +31,7 @@ namespace PSAsync.Provider
         }
 
         [return: MaybeNull]
-        public static TResult ExecuteAsyncAction<TProvider, TResult>(
+        public static TResult ExecuteAsyncMethod<TProvider, TResult>(
             this TProvider provider,
             Func<TProvider, CancellationToken, Task<TResult>> action)
             where TProvider :
@@ -49,7 +49,7 @@ namespace PSAsync.Provider
             return result;
         }
 
-        public static void ExecuteAsyncAction<TProvider, TArgument>(
+        public static void ExecuteAsyncMethod<TProvider, TArgument>(
             this TProvider provider,
             Func<TProvider, TArgument, CancellationToken, Task> action,
             TArgument argument)
@@ -69,7 +69,7 @@ namespace PSAsync.Provider
                 argument);
         }
 
-        public static void ExecuteAsyncAction<TProvider>(
+        public static void ExecuteAsyncMethod<TProvider>(
             this TProvider provider,
             Func<TProvider, CancellationToken, Task> action)
             where TProvider :

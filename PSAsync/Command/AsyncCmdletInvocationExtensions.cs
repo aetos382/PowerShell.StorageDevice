@@ -11,7 +11,7 @@ namespace PSAsync.Command
     public static class AsyncCmdletInvocationExtensions
     {
         [return: MaybeNull]
-        public static TResult ExecuteAsyncAction<TCmdlet, TArgument, TResult>(
+        public static TResult ExecuteAsyncMethod<TCmdlet, TArgument, TResult>(
             this TCmdlet cmdlet,
             Func<TCmdlet, TArgument, CancellationToken, Task<TResult>> action,
             TArgument argument)
@@ -31,7 +31,7 @@ namespace PSAsync.Command
         }
 
         [return: MaybeNull]
-        public static TResult ExecuteAsyncAction<TCmdlet, TResult>(
+        public static TResult ExecuteAsyncMethod<TCmdlet, TResult>(
             this TCmdlet cmdlet,
             Func<TCmdlet, CancellationToken, Task<TResult>> action)
             where TCmdlet :
@@ -49,7 +49,7 @@ namespace PSAsync.Command
             return result;
         }
 
-        public static void ExecuteAsyncAction<TCmdlet, TArgument>(
+        public static void ExecuteAsyncMethod<TCmdlet, TArgument>(
             this TCmdlet cmdlet,
             Func<TCmdlet, TArgument, CancellationToken, Task> action,
             TArgument argument)
@@ -69,7 +69,7 @@ namespace PSAsync.Command
                 argument);
         }
 
-        public static void ExecuteAsyncAction<TCmdlet>(
+        public static void ExecuteAsyncMethod<TCmdlet>(
             this TCmdlet cmdlet,
             Func<TCmdlet, CancellationToken, Task> action)
             where TCmdlet :

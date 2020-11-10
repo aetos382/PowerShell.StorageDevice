@@ -61,10 +61,9 @@ namespace PSAsync
                 catch (AggregateException ex)
                 {
                     var exceptions = ex.Flatten().InnerExceptions;
-
                     var pse = exceptions.FirstOrDefault(e => e is PipelineStoppedException);
 
-                    if (pse != null)
+                    if (pse is not null)
                     {
                         exceptionDispatcher = ExceptionDispatchInfo.Capture(pse);
                     }
@@ -72,6 +71,10 @@ namespace PSAsync
                     {
                         exceptionDispatcher = ExceptionDispatchInfo.Capture(ex);
                     }
+                }
+                catch (Exception ex)
+                {
+                    exceptionDispatcher = ExceptionDispatchInfo.Capture(ex);
                 }
             }
 

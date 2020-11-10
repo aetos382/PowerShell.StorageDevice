@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 using Windows.Devices.Enumeration;
 using Windows.Devices.Portable;
@@ -18,6 +19,13 @@ namespace PowerShellStorageDevice
             {
                 yield return device;
             }
+        }
+
+        public static async ValueTask<DeviceInformation> GetStorageDevice(
+            string deviceId)
+        {
+            var device = await DeviceInformation.CreateFromIdAsync(deviceId);
+            return device;
         }
     }
 }

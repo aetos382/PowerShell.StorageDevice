@@ -12,15 +12,9 @@ namespace PowerShellStorageDevice.Command
     [Cmdlet(VerbsCommon.Get, "StorageDevice")]
     [OutputType(typeof(DeviceInformation))]
     public class GetStorageDeviceCommand :
-        Cmdlet,
-        IAsyncCmdlet
+        AsyncCmdlet
     {
-        protected override void ProcessRecord()
-        {
-            this.ExecuteAsyncAction((c, t) => c.ProcessRecordAsync(t));
-        }
-
-        public async Task ProcessRecordAsync(
+        public override async Task ProcessRecordAsync(
             CancellationToken cancellationToken)
         {
             var devices = StorageDeviceManager.GetStorageDevices();

@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Management.Automation;
 using System.Management.Automation.Provider;
 using System.Threading;
@@ -31,6 +34,33 @@ namespace PowerShellStorageDevice.Provider
         }
 
         #region sync methods
+
+        protected override Collection<PSDriveInfo> InitializeDefaultDrives()
+        {
+            var drives = this.ExecuteAsyncMethod(
+                async (p, c) => {
+                    var drives = await this
+                        .InitializeDefaultDrivesAsync()
+                        .ToListAsync(c)
+                        .ConfigureAwait(false);
+
+                    return new Collection<PSDriveInfo>(drives);
+                });
+
+            return drives!;
+        }
+
+        protected override PSDriveInfo NewDrive(PSDriveInfo drive)
+        {
+            return this.ExecuteAsyncMethod(
+                (p, a, _) => this.NewDriveAsync(a),
+                drive);
+        }
+
+        protected override PSDriveInfo RemoveDrive(PSDriveInfo drive)
+        {
+            return base.RemoveDrive(drive);
+        }
 
         protected override string GetChildName(
             string path)
@@ -79,7 +109,7 @@ namespace PowerShellStorageDevice.Provider
         protected override void GetItem(
             string path)
         {
-            this.ExecuteAsyncAction(
+            this.ExecuteAsyncMethod(
                 (p, s, c) => p.GetItemAsync(path),
                 path);
         }
@@ -110,7 +140,7 @@ namespace PowerShellStorageDevice.Provider
 
             this.WriteVerbose("GetChildItems w/o depth");
 
-            this.ExecuteAsyncAction(
+            this.ExecuteAsyncMethod(
                 (p, a, c) => this.GetChildItemsAsync(a.path, a.recurse, c),
                 (path, recurse));
         }
@@ -124,7 +154,7 @@ namespace PowerShellStorageDevice.Provider
 
             this.WriteVerbose("GetChildItems w/ depth");
 
-            this.ExecuteAsyncAction(
+            this.ExecuteAsyncMethod(
                 (p, a, c) => this.GetChildItemsAsync(a.path, a.recurse, a.depth, c),
                 (path, recurse, depth));
         }
@@ -137,12 +167,49 @@ namespace PowerShellStorageDevice.Provider
 
             this.WriteVerbose("GetChildNames");
 
-            this.ExecuteAsyncAction(
+            this.ExecuteAsyncMethod(
                 (p, a, c) => p.GetChildNamesAsync(a.path, a.returnContainers, c),
                 (path, returnContainers));
         }
 
         #endregion
+
+        public async IAsyncEnumerable<PSDriveInfo> InitializeDefaultDrivesAsync()
+        {
+            yield break;
+        }
+
+        public async Task<PSDriveInfo> NewDriveAsync(
+            PSDriveInfo drive)
+        {
+            try
+            {
+                var device = await StorageDeviceManager
+                    .GetStorageDevice(drive.Root)
+                    .ConfigureAwait(false);
+
+                return drive;
+            }
+            catch (FileNotFoundException ex)
+            {
+                var error = new ErrorRecord(
+                    new ItemNotFoundException(ex.Message, ex),
+                    "DeviceNotFound",
+                    ErrorCategory.ObjectNotFound,
+                    null);
+
+                this.ThrowTerminatingError(error);
+
+                // ここには来ない
+                throw;
+            }
+        }
+
+        public Task<PSDriveInfo> RemoveDriveAsync(
+            PSDriveInfo drive)
+        {
+            throw new PSNotImplementedException();
+        }
 
         public Task<bool> IsValidPathAsync(
             string path)
@@ -153,7 +220,7 @@ namespace PowerShellStorageDevice.Provider
         protected override ProviderInfo Start(
             ProviderInfo providerInfo)
         {
-            var result = this.ExecuteAsyncAction(
+            var result = this.ExecuteAsyncMethod(
                 (p, s, c) => p.StartAsync(s),
                 providerInfo);
 
