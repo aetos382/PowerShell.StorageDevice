@@ -6,3 +6,6 @@ obj/
 *.user
 *.log
 launchSettings.json
+
+*.nupkg
+*.snupkg

@@ -1,29 +1,35 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-	  <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
+    <IncludeBuildOutput>false</IncludeBuildOutput>
+    <SuppressDependenciesWhenPacking>true</SuppressDependenciesWhenPacking>
+    <GetTargetPathDependsOn>$(GetTargetPathDependsOn);_GetDependencyTargetPaths</GetTargetPathDependsOn>
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);_AddAnalyzersToOutput</TargetsForTfmSpecificContentInPackage>
   </PropertyGroup>
 
   <!-- https://github.com/dotnet/roslyn/discussions/47517#discussioncomment-64145 -->
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0-5.final" />
-	  <PackageReference Include="Microsoft.VisualStudio.Validation">
-      <GeneratePathProperty>true</GeneratePathProperty>
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.8.0-5.final">
       <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+	  <PackageReference Include="Microsoft.VisualStudio.Validation">
+      <PrivateAssets>all</PrivateAssets>
+      <GeneratePathProperty>true</GeneratePathProperty>
 	  </PackageReference>
-	  <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <GetTargetPathDependsOn>$(GetTargetPathDependsOn);GetDependencyTargetPaths</GetTargetPathDependsOn>
-  </PropertyGroup>
-
-  <Target Name="GetDependencyTargetPaths">
+  <Target Name="_GetDependencyTargetPaths">
     <ItemGroup>
-      <TargetPathWithTargetPlatformMoniker Include="$(PKGMicrosoft_VisualStudio_Validation)\lib\netstandard2.0\Microsoft.VisualStudio.Validation.dll" IncludeRuntimeDependency="false" />
+      <TargetPathWithTargetPlatformMoniker Include="$(PkgMicrosoft_VisualStudio_Validation)\lib\netstandard2.0\Microsoft.VisualStudio.Validation.dll" IncludeRuntimeDependency="false" />
+    </ItemGroup>
+  </Target>
+
+  <Target Name="_AddAnalyzersToOutput">
+    <ItemGroup>
+      <TfmSpecificPackageFile Include="$(TargetPath)" PackagePath="analyzers/dotnet/cs" />
     </ItemGroup>
   </Target>
 
